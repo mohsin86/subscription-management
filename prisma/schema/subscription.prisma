@@ -1,0 +1,20 @@
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+model Subscription {
+  id         String       @id @default(cuid())
+  name       String
+  category   String
+  price      Decimal
+  currency   String
+  cycle      BillingCycle
+  renewalDate DateTime
+  autoRenew  Boolean      @default(true)
+  notes      String?
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
