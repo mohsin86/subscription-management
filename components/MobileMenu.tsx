@@ -22,7 +22,7 @@ export default function MobileMenu() {
   const pathname = usePathname();
 
   return (
-    <div className="sm:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}

@@ -46,7 +46,7 @@ export default function Navbar() {
           <span className="text-base font-bold sm:text-lg">{profile.name}</span>
         </Link>
 
-        <ul className="hidden list-none items-center gap-1 sm:flex">
+        <ul className="hidden list-none items-center gap-1 lg:flex">
           {navLinks.map((link) => {
             const active = pathname === link.href;
             return (
@@ -66,7 +66,7 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="hidden shrink-0 items-center gap-4 sm:flex">
+        <div className="hidden shrink-0 items-center gap-4 lg:flex">
           <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Login
           </Link>
