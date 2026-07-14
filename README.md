@@ -1,5 +1,29 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## About
+
+A personal subscription tracker — track recurring subscriptions (Netflix, Spotify, software tools, etc.), see what's active vs. expiring, and get emailed before something renews so nothing charges you by surprise. Built as a learning project to prepare for a Next.js interview; the public-facing pages double as a personal portfolio.
+
+## Live demo
+
+**[mohammed-mohasin.vercel.app/subscription-management/login](https://mohammed-mohasin.vercel.app/subscription-management/login)**
+
+Log in with the seeded demo account, or sign up with your own email/password or Google:
+
+| | |
+|---|---|
+| Email | `demo@subscription-tracker.dev` |
+| Password | `Demo@1234` |
+
+## Notifications
+
+- **Now**: daily email reminder (via Resend) before a subscription renews — how many days before is configurable per subscription (default 7).
+- **Planned**: a free mobile channel via Telegram Bot API (see `AGENTS.md` roadmap, Phase 10).
+
+## Tech stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Prisma 7 (driver adapter, no query-engine binary) · PostgreSQL (Neon) · Auth.js v5 · TanStack Query · React Hook Form + Zod · Tailwind CSS · Resend · Docker
+
 ## Getting Started
 
 First, run the development server:

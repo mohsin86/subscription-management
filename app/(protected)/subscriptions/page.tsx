@@ -6,6 +6,7 @@ import { useDeleteSubscription } from "./hooks/useDeleteSubscription";
 import SubscriptionForm from "./SubscriptionForm";
 import type { Subscription } from "./subscriptions.client";
 import { getSubscriptionStatus, STATUS_LABEL, STATUS_COLOR } from "@/lib/subscription-status";
+import Link from "next/link";
 
 
 
@@ -67,9 +68,10 @@ export default function SubscriptionsPage() {
                 <th className="py-2">Renews</th>
                 <th className="py-2">Status</th>
                 <th className="py-2">Auto-renew</th>
-
+                <th className="py-2">Vendor</th>
                 <th className="py-2"></th>
               </tr>
+
             </thead>
             <tbody>
               {subscriptions.map((subscription) => {
@@ -77,7 +79,11 @@ export default function SubscriptionsPage() {
 
                 return (
                   <tr key={subscription.id} className="border-b">
-                    <td className="py-2">{subscription.name}</td>
+                    <td className="py-2">
+                    <Link href={`/subscriptions/${subscription.id}`} className="underline">
+                      {subscription.name}
+                    </Link>
+                  </td>
                     <td className="py-2">{subscription.category}</td>
                     <td className="py-2">
                       {subscription.price} {subscription.currency}
@@ -90,6 +96,21 @@ export default function SubscriptionsPage() {
                       {STATUS_LABEL[status]}
                     </td>
                     <td className="py-2">{subscription.autoRenew ? "Yes" : "No"}</td>
+                      <td className="py-2">
+                        {subscription.vendorUrl ? (
+                          <a
+                            href={subscription.vendorUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                          >
+                            Visit &rarr;
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
+
                     <td className="py-2">
                       <div className="flex gap-2">
                         <button type="button" onClick={() => setFormTarget(subscription)} className="border px-2 py-1">

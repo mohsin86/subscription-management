@@ -73,13 +73,14 @@ export default async function DashboardPage() {
           <h2 className="font-semibold mb-2">Active subscriptions</h2>
           <ul className="border divide-y">
             {subscriptions.map((sub) => {
-              const status = getSubscriptionStatus(sub.renewalDate);
+              const status = getSubscriptionStatus(sub.renewalDate, sub.reminderDaysBefore);
+
 
               return (
-                <li key={sub.id}>
+                <li key={sub.id} className="flex items-center justify-between px-4 py-2">
                   <Link
                     href={`/subscriptions/${sub.id}`}
-                    className="flex justify-between px-4 py-2"
+                    className="flex flex-1 justify-between"
                   >
                     <span>{sub.name}</span>
                     <span className="flex gap-3">
@@ -91,7 +92,18 @@ export default async function DashboardPage() {
                       </span>
                     </span>
                   </Link>
+                  {sub.vendorUrl && (
+                    <a
+                      href={sub.vendorUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-3 shrink-0 underline text-sm"
+                    >
+                      Visit &rarr;
+                    </a>
+                  )}
                 </li>
+
               );
             })}
           </ul>
