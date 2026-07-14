@@ -3,6 +3,10 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SubscriptionSchema } from "@/lib/validation/subscription";
 
+/**
+ * GET /api/subscriptions — lists the logged-in user's subscriptions.
+ * Args: none (reads the session). Returns: 200 JSON Subscription[], or 401 if not logged in.
+ */
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
@@ -17,6 +21,10 @@ export async function GET() {
   return NextResponse.json(subscriptions);
 }
 
+/**
+ * POST /api/subscriptions — creates a subscription for the logged-in user.
+ * Args: request body (SubscriptionSchema shape). Returns: 201 JSON Subscription, 400 if invalid, 401 if not logged in.
+ */
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {

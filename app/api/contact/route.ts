@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { ContactSchema } from '@/lib/validation/contact';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const CONTACT_RECIPIENT = process.env.CONTACT_EMAIL ?? 'devctg01@gmail.com';
 
 export async function POST(request: Request) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const body = await request.json();
   const result = ContactSchema.safeParse(body);
+
 
   if (!result.success) {
     return NextResponse.json(

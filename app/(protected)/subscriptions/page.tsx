@@ -5,10 +5,19 @@ import { useSubscriptions } from "./hooks/useSubscriptions";
 import { useDeleteSubscription } from "./hooks/useDeleteSubscription";
 import SubscriptionForm from "./SubscriptionForm";
 import type { Subscription } from "./subscriptions.client";
+import { getSubscriptionStatus, STATUS_LABEL, STATUS_COLOR } from "@/lib/subscription-status";
 
+
+
+/**
+ * SubscriptionsPage — lists the logged-in user's subscriptions in a table.
+ * Args: none (client component; reads data via useSubscriptions()).
+ * Returns: table UI with inline add/edit form and delete buttons.
+ */
 export default function SubscriptionsPage() {
   const { data: subscriptions, isPending, isError, error } = useSubscriptions();
   const { mutate: deleteSubscription, isPending: isDeleting } = useDeleteSubscription();
+  
 
   const [formTarget, setFormTarget] = useState<Subscription | "new" | null>(null);
 
@@ -56,44 +65,45 @@ export default function SubscriptionsPage() {
                 <th className="py-2">Price</th>
                 <th className="py-2">Cycle</th>
                 <th className="py-2">Renews</th>
+                <th className="py-2">Status</th>
                 <th className="py-2">Auto-renew</th>
+
                 <th className="py-2"></th>
               </tr>
             </thead>
             <tbody>
-              {subscriptions.map((subscription) => (
-                <tr key={subscription.id} className="border-b">
-                  <td className="py-2">{subscription.name}</td>
-                  <td className="py-2">{subscription.category}</td>
-                  <td className="py-2">
-                    {subscription.price} {subscription.currency}
-                  </td>
-                  <td className="py-2">{subscription.cycle}</td>
-                  <td className="py-2">
-                    {new Date(subscription.renewalDate).toLocaleDateString()}
-                  </td>
-                  <td className="py-2">{subscription.autoRenew ? "Yes" : "No"}</td>
-                  <td className="py-2">
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setFormTarget(subscription)}
-                        className="border px-2 py-1"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        disabled={isDeleting}
-                        onClick={() => deleteSubscription(subscription.id)}
-                        className="border px-2 py-1"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {subscriptions.map((subscription) => {
+                const status = getSubscriptionStatus(subscription.renewalDate, subscription.reminderDaysBefore);
+
+                return (
+                  <tr key={subscription.id} className="border-b">
+                    <td className="py-2">{subscription.name}</td>
+                    <td className="py-2">{subscription.category}</td>
+                    <td className="py-2">
+                      {subscription.price} {subscription.currency}
+                    </td>
+                    <td className="py-2">{subscription.cycle}</td>
+                    <td className="py-2">
+                      {new Date(subscription.renewalDate).toLocaleDateString()}
+                    </td>
+                    <td className={`py-2 ${STATUS_COLOR[status]}`}>
+                      {STATUS_LABEL[status]}
+                    </td>
+                    <td className="py-2">{subscription.autoRenew ? "Yes" : "No"}</td>
+                    <td className="py-2">
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => setFormTarget(subscription)} className="border px-2 py-1">
+                          Edit
+                        </button>
+                        <button type="button" disabled={isDeleting} onClick={() => deleteSubscription(subscription.id)} className="border px-2 py-1">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+
             </tbody>
           </table>
         </div>

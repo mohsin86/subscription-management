@@ -9,11 +9,15 @@ export type Subscription = {
   cycle: "MONTHLY" | "YEARLY";
   renewalDate: string;
   autoRenew: boolean;
+  reminderDaysBefore: number;
+  vendorUrl: string | null;
   notes: string | null;
   userId: string;
   createdAt: string;
   updatedAt: string;
 };
+
+
 
 async function handleResponse<T>(res: Response): Promise<T> {
   const json = await res.json();
@@ -23,11 +27,19 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return json as T;
 }
 
+/**
+ * fetchSubscriptions — gets the current user's subscriptions.
+ * Args: none. Returns: Promise<Subscription[]>
+ */
 export async function fetchSubscriptions() {
   const res = await fetch("/api/subscriptions");
   return handleResponse<Subscription[]>(res);
 }
 
+/**
+ * createSubscription — creates a new subscription.
+ * Args: data (SubscriptionFormData). Returns: Promise<Subscription>
+ */
 export async function createSubscription(data: SubscriptionFormData) {
   const res = await fetch("/api/subscriptions", {
     method: "POST",
@@ -37,6 +49,10 @@ export async function createSubscription(data: SubscriptionFormData) {
   return handleResponse<Subscription>(res);
 }
 
+/**
+ * updateSubscription — updates an existing subscription by id.
+ * Args: id (string), data (SubscriptionFormData). Returns: Promise<Subscription>
+ */
 export async function updateSubscription(id: string, data: SubscriptionFormData) {
   const res = await fetch(`/api/subscriptions/${id}`, {
     method: "PATCH",
@@ -46,6 +62,10 @@ export async function updateSubscription(id: string, data: SubscriptionFormData)
   return handleResponse<Subscription>(res);
 }
 
+/**
+ * deleteSubscription — deletes a subscription by id.
+ * Args: id (string). Returns: Promise<{ success: true }>
+ */
 export async function deleteSubscription(id: string) {
   const res = await fetch(`/api/subscriptions/${id}`, {
     method: "DELETE",
