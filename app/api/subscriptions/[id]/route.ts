@@ -3,6 +3,11 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SubscriptionSchema } from "@/lib/validation/subscription";
 
+/**
+ * PATCH /api/subscriptions/[id] — updates one subscription owned by the logged-in user.
+ * Args: params.id (string), request body (SubscriptionSchema shape).
+ * Returns: 200 JSON Subscription, 400 if invalid, 401 if not logged in, 404 if missing/not owned.
+ */
 export async function PATCH(
   request: Request,
   { params }: RouteContext<"/api/subscriptions/[id]">
@@ -35,6 +40,10 @@ export async function PATCH(
   return NextResponse.json(subscription);
 }
 
+/**
+ * DELETE /api/subscriptions/[id] — deletes one subscription owned by the logged-in user.
+ * Args: params.id (string). Returns: 200 JSON { success: true }, 401 if not logged in, 404 if missing/not owned.
+ */
 export async function DELETE(
   request: Request,
   { params }: RouteContext<"/api/subscriptions/[id]">

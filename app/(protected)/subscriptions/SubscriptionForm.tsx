@@ -17,6 +17,11 @@ type SubscriptionFormProps = {
   onCancel: () => void;
 };
 
+/**
+ * SubscriptionForm — add/edit form for a subscription.
+ * Args: subscription (optional, present when editing), onSuccess, onCancel callbacks.
+ * Returns: form JSX; calls createSubscription or updateSubscription on submit depending on whether `subscription` was passed.
+ */
 export default function SubscriptionForm({
   subscription,
   onSuccess,
@@ -31,17 +36,20 @@ export default function SubscriptionForm({
   } = useForm<SubscriptionFormInput, unknown, SubscriptionFormOutput>({
     resolver: zodResolver(SubscriptionSchema),
     defaultValues: subscription
-      ? {
-          name: subscription.name,
-          category: subscription.category,
-          price: subscription.price,
-          currency: subscription.currency,
-          cycle: subscription.cycle,
-          renewalDate: subscription.renewalDate.slice(0, 10),
-          autoRenew: subscription.autoRenew,
-          notes: subscription.notes ?? "",
-        }
-      : { cycle: "MONTHLY", autoRenew: true },
+  ? {
+      name: subscription.name,
+      category: subscription.category,
+      price: subscription.price,
+      currency: subscription.currency,
+      cycle: subscription.cycle,
+      renewalDate: subscription.renewalDate.slice(0, 10),
+      autoRenew: subscription.autoRenew,
+      reminderDaysBefore: subscription.reminderDaysBefore,
+      vendorUrl: subscription.vendorUrl ?? "",
+      notes: subscription.notes ?? "",
+    }
+  : { cycle: "MONTHLY", autoRenew: true, reminderDaysBefore: 7 },
+
   });
 
   const { mutate: createSubscription, isPending: isCreating } = useCreateSubscription();
@@ -101,6 +109,34 @@ export default function SubscriptionForm({
         <input id="autoRenew" type="checkbox" {...register("autoRenew")} />
         <label htmlFor="autoRenew">Auto-renew</label>
       </div>
+
+      <div>
+        <label htmlFor="reminderDaysBefore">Remind me (days before renewal)</label>
+        <input
+          id="reminderDaysBefore"
+          type="number"
+          min={0}
+          {...register("reminderDaysBefore")}
+          className="border px-2 py-1 w-full"
+        />
+        {errors.reminderDaysBefore && (
+          <p className="text-red-500 text-sm">{errors.reminderDaysBefore.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="vendorUrl">Vendor URL (optional)</label>
+        <input
+          id="vendorUrl"
+          type="url"
+          placeholder="https://netflix.com/account"
+          {...register("vendorUrl")}
+          className="border px-2 py-1 w-full"
+        />
+        {errors.vendorUrl && <p className="text-red-500 text-sm">{errors.vendorUrl.message}</p>}
+      </div>
+
+
 
       <div>
         <label htmlFor="notes">Notes</label>
