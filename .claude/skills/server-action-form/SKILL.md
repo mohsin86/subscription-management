@@ -1,9 +1,9 @@
 ---
 name: server-action-form
-description: Walks through building a data-mutating form the way this project (memory-next) has already locked in — zod schema, a 'use server' action, and a 'use client' react-hook-form component wired together with zodResolver. Use this whenever the user wants to add, mention, or plan a new form that creates/updates/deletes data (signup-style forms, settings forms, CRUD forms for any model), or asks "how do I add a form like login/signup" — even if they don't say "server action" explicitly. Do NOT use for read-only display components, forms with client-side-only state, or forms this project already routes through TanStack Query + API routes (e.g. the subscriptions forms) unless the user is explicitly converting one of those to the Server Action pattern.
+description: Walks through building a data-mutating form the way this project (subscription-management) has already locked in — zod schema, a 'use server' action, and a 'use client' react-hook-form component wired together with zodResolver. Use this whenever the user wants to add, mention, or plan a new form that creates/updates/deletes data (signup-style forms, settings forms, CRUD forms for any model), or asks "how do I add a form like login/signup" — even if they don't say "server action" explicitly. Do NOT use for read-only display components, forms with client-side-only state, or forms this project already routes through TanStack Query + API routes (e.g. the subscriptions forms) unless the user is explicitly converting one of those to the Server Action pattern.
 ---
 
-# Server Action form pattern (memory-next)
+# Server Action form pattern (subscription-management)
 
 This project is a hand-typed Next.js 16 / interview-prep learning project (see `AGENTS.md`, `brief.md`). **Do not write the files yourself.** Walk the user through each piece, explain *why* it's shaped that way, and let them type it. This mirrors the project's `code-reviewer` subagent workflow — you're the guide, not the author.
 

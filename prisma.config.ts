@@ -7,7 +7,7 @@ export default defineConfig({
   schema: "prisma/schema",
   migrations: {
     path: "prisma/migrations",
-    //seed: "tsx prisma/seed.ts", // needed if need to create auto entry while running migration, but not needed if you want to run seed manually after migration
+    seed: "tsx prisma/seed.ts",
   },
   datasource: {
     url: process.env["DATABASE_URL"],

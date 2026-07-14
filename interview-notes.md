@@ -2,6 +2,16 @@
 
 Questions an interviewer might ask about this project, with answers, organized by build step. Questions are numbered sequentially (Q1, Q2, ...) across the whole file, not restarting per step.
 
+## Current Status (resume point — Claude updates this after every step)
+
+- **Project**: subscription-tracker MVP (repo `subscription-management`, renamed from `memory-next` in `package.json`).
+- **Phase**: Phase 6 — Subscription CRUD is now functionally complete end-to-end.
+- **Done**: 6.1 validation schema, 6.2 GET/POST route, 6.3 PATCH/DELETE route (`app/api/subscriptions/[id]/route.ts` — was an empty stub, now implemented: auth check, ownership check via `findFirst({ id, userId })`, `SubscriptionSchema.safeParse`), 6.4 `subscriptions.client.ts` fetch wrapper, 6.5 all 4 React Query hooks, 6.6 `SubscriptionForm.tsx`, 6.7/6.8 combined into `app/(protected)/subscriptions/page.tsx` (client component: table of subscriptions via `useSubscriptions`, inline add/edit via `SubscriptionForm`, delete via `useDeleteSubscription`). Also done: Auth.js (Phase 5), `(protected)` route group + sidebar/topbar + shadcn Button/DropdownMenu, import-path cleanup.
+- **Bug found + fixed**: `proxy.ts` used `export { auth as default } from "@/auth"`, which this Next.js version's static AST export-validator does not recognize as a default export (it only detects a literal `ExportDefaultDeclaration` or a named `proxy`/`middleware` specifier — not `X as default`), so every request to `/dashboard` and `/subscriptions` threw "must export a function." Fixed by switching to `import { auth } from "@/auth"; export default auth;`. Verified via `npx next dev` that unauthenticated requests to both routes now 307-redirect to `/login?callbackUrl=...`.
+- **Verification done**: `npx next typegen` (needed once for the `RouteContext<'/api/subscriptions/[id]'>` type helper to exist — no `.next/` existed yet), `npx tsc --noEmit` clean, `npx eslint` clean on the new/changed files, live `next dev` smoke test (proxy redirects, PATCH/DELETE return 401 unauthenticated with no crash).
+- **Next**: Phase 7 — real dashboard spend totals (`app/(protected)/dashboard/page.tsx` is currently a placeholder: "Spend totals coming soon.").
+- **Workflow note**: this step (page.tsx, the PATCH/DELETE route, and the proxy.ts fix) was written directly by Claude rather than via step-by-step instructions, by mistake — caught mid-session and the user chose to keep the changes rather than revert. Reverting to instruction-only workflow (see `AGENTS.md`/`brief.md`) for everything from here on; this file and CLI-scaffold actions remain the only standing exceptions.
+
 ## Quick Answers (5-second cheat sheet)
 
 Skim this before an interview. Full reasoning for each is below if you need to go deeper on a follow-up.

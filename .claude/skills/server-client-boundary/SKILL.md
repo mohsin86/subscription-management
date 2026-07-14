@@ -1,9 +1,9 @@
 ---
 name: server-client-boundary
-description: Pre-flight check for whether a new or edited component in memory-next should be a Server Component or a Client Component ('use client'), and where the data-fetching should happen. Use this BEFORE writing any new page, layout, or component — whenever the user is about to add a component, asks "does this need use client", mentions adding state/hooks/onClick/interactivity to something, or is deciding how a component should load its data. This is a before-the-fact check; the code-reviewer subagent catches these same mistakes after the fact, so use this skill to avoid needing that correction in the first place.
+description: Pre-flight check for whether a new or edited component in subscription-management should be a Server Component or a Client Component ('use client'), and where the data-fetching should happen. Use this BEFORE writing any new page, layout, or component — whenever the user is about to add a component, asks "does this need use client", mentions adding state/hooks/onClick/interactivity to something, or is deciding how a component should load its data. This is a before-the-fact check; the code-reviewer subagent catches these same mistakes after the fact, so use this skill to avoid needing that correction in the first place.
 ---
 
-# Server/Client boundary check (memory-next)
+# Server/Client boundary check (subscription-management)
 
 This project mixes two legitimate patterns on purpose — the point of this skill isn't "always prefer Server Components," it's picking the right one *before* typing, so you don't have to backtrack after `code-reviewer` flags it.
 

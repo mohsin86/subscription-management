@@ -10,10 +10,10 @@ export default async function ProtectedLayout({
   const session = await auth();
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <Topbar name={session?.user?.name} email={session?.user?.email} />
+    <div className="flex min-h-screen flex-col">
+      <Topbar name={session?.user?.name} email={session?.user?.email} />
+      <div className="flex flex-1">
+        <Sidebar />
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>

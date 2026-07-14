@@ -1,47 +1,78 @@
-// STALE — written for the old Role/username RBAC schema (Role.ADMIN, username field),
-// both removed when the project pivoted to the subscription-tracker MVP.
-// No seeding is needed for Core v1 (self-serve signup, no admin user).
-//
-// Revisit this when we want dev-fixture data — e.g. a test User + a few Subscription rows
-// to make the dashboard/list pages easy to eyeball without signing up manually each time.
-// At that point: rewrite main() to create a User via email (not username), then
-// prisma.subscription.createMany(...) with some sample rows, and re-enable the
-// `seed: "tsx prisma/seed.ts"` line in prisma.config.ts.
-
-/*
-
-
-import { PrismaClient, Role } from '../lib/generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import bcrypt from 'bcryptjs';
+import { PrismaClient } from "../lib/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
+const DEMO_EMAIL = "demo@subscription-tracker.dev";
+const DEMO_PASSWORD = "Demo@1234";
+
 async function main() {
+  const hashedPassword = await bcrypt.hash(DEMO_PASSWORD, 10);
 
+  const user = await prisma.user.upsert({
+    where: { email: DEMO_EMAIL },
+    update: { password: hashedPassword },
+    create: {
+      name: "Demo User",
+      email: DEMO_EMAIL,
+      password: hashedPassword,
+    },
+  });
 
-  const username = process.env.ADMIN_USERNAME;
-  const password = process.env.ADMIN_PASSWORD;
+  await prisma.subscription.deleteMany({ where: { userId: user.id } });
 
-  if (!username || !password) {
-    throw new Error('ADMIN_USERNAME and ADMIN_PASSWORD must be set in .env');
-  }
+  await prisma.subscription.createMany({
+    data: [
+      {
+        userId: user.id,
+        name: "Netflix",
+        category: "Streaming",
+        price: 15.49,
+        currency: "USD",
+        cycle: "MONTHLY",
+        renewalDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
+        autoRenew: true,
+        notes: "Premium plan, shared with family",
+      },
+      {
+        userId: user.id,
+        name: "Spotify",
+        category: "Music",
+        price: 11.99,
+        currency: "USD",
+        cycle: "MONTHLY",
+        renewalDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+        autoRenew: true,
+        notes: null,
+      },
+      {
+        userId: user.id,
+        name: "AWS",
+        category: "Cloud Hosting",
+        price: 240,
+        currency: "USD",
+        cycle: "YEARLY",
+        renewalDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        autoRenew: false,
+        notes: "Reserved instance for side projects",
+      },
+      {
+        userId: user.id,
+        name: "Notion",
+        category: "Productivity",
+        price: 96,
+        currency: "USD",
+        cycle: "YEARLY",
+        renewalDate: new Date(Date.now() + 200 * 24 * 60 * 60 * 1000),
+        autoRenew: true,
+        notes: null,
+      },
+    ],
+  });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await prisma.user.upsert({
-  where: { username },
-  update: { password: hashedPassword },
-  create: {
-    username,
-    password: hashedPassword,
-    role: Role.ADMIN,
-  },
-});
-
-
-  console.log(`Admin user "${username}" seeded.`);
+  console.log(`Demo user "${DEMO_EMAIL}" seeded with 4 sample subscriptions.`);
 }
 
 main()
@@ -52,5 +83,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-  */

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteSubscription } from "@/app/(protected)/subscriptions/subscriptions.client";
+import { deleteSubscription } from "../subscriptions.client";
 
 export function useDeleteSubscription() {
   const queryClient = useQueryClient();

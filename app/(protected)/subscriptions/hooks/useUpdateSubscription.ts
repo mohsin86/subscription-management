@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateSubscription } from "@/app/(protected)/subscriptions/subscriptions.client";
+import { updateSubscription } from "../subscriptions.client";
 import type { SubscriptionFormData } from "@/lib/validation/subscription";
 
 export function useUpdateSubscription() {

@@ -2,6 +2,7 @@
 
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
+import { signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SignupSchema, type SignupFormData } from "@/lib/validation/auth";
 
@@ -31,4 +32,8 @@ export async function signupAction(
   });
 
   redirect("/login");
+}
+
+export async function googleSignupAction() {
+  await signIn("google", { redirectTo: "/dashboard" });
 }

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SubscriptionSchema } from "@/lib/validation/subscription";
-import type { Subscription } from "./subscriptions.client.ts";
+import type { Subscription } from "./subscriptions.client";
 import { useCreateSubscription } from "./hooks/useCreateSubscription";
 import { useUpdateSubscription } from "./hooks/useUpdateSubscription";
 
