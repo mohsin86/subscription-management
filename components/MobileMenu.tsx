@@ -13,7 +13,7 @@ const navLinks = [
 ];
 
 const authLinks = [
-  { href: "/login", label: "Login" },
+  { href: "/login", label: "Subscription Login" },
   { href: "/signup", label: "Sign up" },
 ];
 
