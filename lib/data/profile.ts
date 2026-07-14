@@ -136,6 +136,7 @@ export const personalProjects: {
     description:
       "The app you're on right now — a subscription-management tool built as a hands-on Next.js App Router project. Covers authentication (credentials + Google via Auth.js), a Prisma/PostgreSQL-backed CRUD flow, Zod validation, and TanStack Query on the client. Built collaboratively with Claude Code as a real, live example of agentic AI-assisted development — from database migrations to UI to shipping.",
     tech: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Auth.js", "TanStack Query", "Zod", "Tailwind CSS"],
+    liveUrl: "https://mohammed-mohasin.vercel.app/subscription-management/login",
     githubUrl: "https://github.com/mohsin86/subscription-management",
   },
   {
