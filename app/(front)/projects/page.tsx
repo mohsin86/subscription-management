@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { profile, personalProjects, clientProjects } from "@/lib/data/profile";
 
 export const metadata: Metadata = {
@@ -89,6 +90,19 @@ export default function ProjectsPage() {
             )}
           </div>
         ))}
+      </div>
+
+      <div className="mt-16 border border-zinc-200 p-8 text-center dark:border-zinc-800">
+        <h2 className="text-lg font-bold">Want to see more?</h2>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+          I&apos;ve got more projects I don&apos;t showcase publicly — ping me and I&apos;ll walk you through them.
+        </p>
+        <Link
+          href="/contact"
+          className="mt-4 inline-block rounded-full border border-zinc-900 bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          Ping me
+        </Link>
       </div>
     </section>
   );
