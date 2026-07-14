@@ -101,7 +101,7 @@ The reason to use route groups here is purely **layout composition**: everything
 
 **Q4: What does `proxy.ts` do on a request to a protected route, and why isn't the cookie check there "secure enough" on its own?**
 
-`proxy.ts` (the renamed, Node.js-runtime-by-default successor to `middleware.ts` in this Next.js version) runs before the route renders, on nearly every matching request. For `/dashboard`, it reads the `session` cookie, verifies the JWT's signature and expiry via `decrypt()`, and redirects to `/login` before any page code runs if there's no valid session.
+`proxy.ts` (the renamed, Node.js-runtime-by-default successor to `middleware.ts` in this Next.js version) runs before the route renders, on nearly every matching request. For `/dashboard`, it reads the `session` cookie, verifies the JWT's signature and expiry via `decrypt()`, and redirects to `/subscription-management/login` before any page code runs if there's no valid session.
 
 This is an "optimistic" check — it only verifies the cookie cryptographically, never queries the database. It can't know if the user was since deleted, deactivated, or had their role changed. It's also easy to silently lose coverage of a route if the `matcher` isn't kept in sync during a refactor, and Server Functions/Route Handlers are directly callable via raw `fetch`/POST regardless of what a browser-only proxy redirect would suggest. So the real authorization decision is made twice, deliberately (defense in depth): `proxy.ts` gives a fast, good-enough-for-UX redirect so unauthenticated users never see the page shell, while `verifySession()`/`verifyAdmin()` next to the actual data access is what really decides whether Prisma returns any rows.
 

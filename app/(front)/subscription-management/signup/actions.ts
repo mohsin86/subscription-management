@@ -31,7 +31,7 @@ export async function signupAction(
     },
   });
 
-  redirect("/login");
+  redirect("/subscription-management/login");
 }
 
 export async function googleSignupAction() {
