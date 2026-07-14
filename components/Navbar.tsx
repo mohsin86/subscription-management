@@ -67,10 +67,10 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden shrink-0 items-center gap-4 lg:flex">
-          <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <Link href="/subscription-management/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Subscription Login
           </Link>
-          <Link href="/signup" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <Link href="/subscription-management/signup" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
             Sign up
           </Link>
           <Link

@@ -13,8 +13,8 @@ const navLinks = [
 ];
 
 const authLinks = [
-  { href: "/login", label: "Subscription Login" },
-  { href: "/signup", label: "Sign up" },
+  { href: "/subscription-management/login", label: "Subscription Login" },
+  { href: "/subscription-management/signup", label: "Sign up" },
 ];
 
 export default function MobileMenu() {
