@@ -20,6 +20,11 @@ export default function Topbar({ name, email }: TopbarProps) {
           Subscription Tracker
         </Link>
       </div>
+
+      <span className="hidden sm:block absolute left-1/2 -translate-x-1/2 text-sm text-gray-500">
+        Never miss a renewal — add your subscriptions and Telegram ID to get email & Telegram reminders.
+      </span>
+
       <UserMenu name={name} email={email} />
     </header>
   );
