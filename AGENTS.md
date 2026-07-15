@@ -38,7 +38,8 @@ Do not create, edit, or delete application files directly (`app/`, `components/`
 
 ## Roadmap (Phase 10+)
 
-- **Phase 10 — Mobile notification channel**: Telegram Bot API (free — one HTTP call per notification, user links their Telegram chat ID once). Reuses the `reminderDaysBefore` setting from Phase 9.
-- **Phase 11 — Team subscriptions with full RBAC**: new `Team` + `TeamMember` (role: `OWNER` / `ADMIN` / `MEMBER`) models; `Subscription.teamId` (nullable — personal subscriptions unaffected). Only `OWNER`/`ADMIN` can create/edit/delete a team's subscriptions; `MEMBER` is read-only. Every mutation Route Handler needs a role check alongside the existing ownership check.
+- **Phase 10 — Auth rate limiting + signup spam protection**: `@upstash/ratelimit` + Upstash Redis (free tier, no card required — plain in-memory rate limiting doesn't work reliably across serverless invocations) on the login and signup Server Actions. A honeypot field (hidden input real users never fill; reject if it's non-empty) as a zero-cost first line of defense on signup, with Cloudflare Turnstile (free CAPTCHA) as a stretch goal if spam persists.
+- **Phase 11 — Mobile notification channel**: Telegram Bot API (free — one HTTP call per notification, user links their Telegram chat ID once). Reuses the `reminderDaysBefore` setting from Phase 9.
+- **Phase 12 — Team subscriptions with full RBAC**: new `Team` + `TeamMember` (role: `OWNER` / `ADMIN` / `MEMBER`) models; `Subscription.teamId` (nullable — personal subscriptions unaffected). Only `OWNER`/`ADMIN` can create/edit/delete a team's subscriptions; `MEMBER` is read-only. Every mutation Route Handler needs a role check alongside the existing ownership check.
 
 See `interview-notes.md` for the detailed Q&A/reasoning behind decisions already made.
