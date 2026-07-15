@@ -6,4 +6,16 @@ Go throug me:
    
 
     Step to follow:
-        1. give me instruction how to do that, do not create, edit, delete file yourself, how to create test file, show me by instruction step by step 
+        1. give me instruction how to do that, do not create, edit, delete file yourself, how to create test file, show me by instruction step by step
+
+## Status (updated)
+
+Everything from this brief is built, except the dev-team suggestion — decided not to implement team functionality for now (see `AGENTS.md` roadmap Phase 12 for what that would have required, kept for reference).
+
+- Active/expired status, renewal reminders: done — email (Resend) and Telegram, both configurable per subscription. WhatsApp and mobile push were considered but dropped in favor of Telegram (free, no business-account approval needed).
+- Monthly/yearly billing cycle: done.
+- Portfolio front end + subscription backend: done.
+- Manual login/signup + Google login/signup: done.
+- Team/dev-team support: scoped and documented (`AGENTS.md` Phase 12), not built — declined by choice, not a limitation.
+
+Live at `mohammed-mohasin.vercel.app/subscription-management/login`. See `README.md` and `AGENTS.md` for details.

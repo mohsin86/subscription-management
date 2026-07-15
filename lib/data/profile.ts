@@ -10,10 +10,11 @@ export const profile = {
   tagline:
     "Senior full stack developer with 10+ years leading structured project delivery on eCommerce platforms and business websites, and building SaaS applications end-to-end.",
   about: [
-    "I've been working in web development and technical leadership since 2012, with over 10 years of experience in full-stack development, team management, and client delivery. Most of my career has been at SEBPO, where I progressed from developer to team lead, building eCommerce platforms and business websites for international clients.",
-    "I work with PHP, Node.js, Express.js, TypeScript, React, Next.js, NestJS, and AWS, and rely on tools like Jira, Asana, Trello, Slack, and Zoom in my daily workflow. I'm currently preparing for my PMP certification.",
-    "I also use AI coding tools like Claude Code and Codex for development, debugging, and routine tasks — freeing me up to focus on solving problems and delivering quality software. Beyond just using them, I configure and extend these tools myself: setting up MCP servers, integrating Claude Skills, and writing hooks so they fit real development workflows and how my teams actually work.",
+  "I got into web development in 2012 — started as a developer, and somewhere along the way ended up leading the team building the platforms I used to build myself. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
+  "Day to day that's architecture calls, code reviews, sprint planning, and talking directly to clients — making sure what actually ships matches what they came to us for, not just what's easiest to build. A store that converts better, a checkout that doesn't lose people halfway through, a backend that holds up when traffic spikes instead of falling over. Mostly working in PHP, Node.js, Express, TypeScript, React, Next.js, NestJS, and AWS, with Jira, Asana, Trello, Slack, and Zoom keeping the team on the same page.",
+  "More recently I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I'm also finishing my PMP certification, mostly to put a formal label on the project management side I've already been doing for years.",
   ],
+
 };
 
 export const skills: { category: string; items: string[] }[] = [
