@@ -15,6 +15,10 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
+/**
+ * Navbar — sticky top nav for the portfolio site (desktop links + mobile menu).
+ * Args: none. Returns: header JSX.
+ */
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);

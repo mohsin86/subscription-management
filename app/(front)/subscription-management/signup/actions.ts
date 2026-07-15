@@ -6,6 +6,10 @@ import { signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SignupSchema, type SignupFormData } from "@/lib/validation/auth";
 
+/**
+ * signupAction — creates a new user account with a hashed password.
+ * Args: data (SignupFormData). Returns: { error } on failure; redirects to login on success.
+ */
 export async function signupAction(
   data: SignupFormData
 ): Promise<{ error: string } | void> {
@@ -34,6 +38,10 @@ export async function signupAction(
   redirect("/subscription-management/login");
 }
 
+/**
+ * googleSignupAction — starts the Google OAuth signup/sign-in flow.
+ * Args: none. Returns: void — redirects to /dashboard on success.
+ */
 export async function googleSignupAction() {
   await signIn("google", { redirectTo: "/dashboard" });
 }

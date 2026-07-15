@@ -9,6 +9,10 @@ import { loginAction, googleLoginAction } from "./actions";
 const DEMO_EMAIL = "demo@subscription-tracker.dev";
 const DEMO_PASSWORD = "Demo@1234";
 
+/**
+ * LoginForm — email/password + Google sign-in form, with a fill-demo-credentials shortcut.
+ * Args: none. Returns: form JSX; calls loginAction or googleLoginAction on submit.
+ */
 export default function LoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const {

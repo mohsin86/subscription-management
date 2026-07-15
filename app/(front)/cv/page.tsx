@@ -6,6 +6,10 @@ export const metadata: Metadata = {
   description: profile.tagline,
 };
 
+/**
+ * CvPage — printable/downloadable CV view of the portfolio profile data.
+ * Args: none. Returns: static page JSX with a CV download link.
+ */
 export default function CvPage() {
   return (
     <section className="mx-auto max-w-3xl px-6 py-16">

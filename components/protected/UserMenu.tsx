@@ -22,6 +22,10 @@ function getInitials(name: string | null | undefined, email: string | null | und
   return source.slice(0, 2).toUpperCase();
 }
 
+/**
+ * UserMenu — avatar dropdown with profile/logout actions.
+ * Args: name, email (current session user's display info, both nullable). Returns: dropdown menu JSX.
+ */
 export default function UserMenu({ name, email }: UserMenuProps) {
   const initials = getInitials(name, email);
 

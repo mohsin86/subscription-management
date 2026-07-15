@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "Subscription Tracker Login",
 };
 
+/**
+ * LoginPage — login route wrapping LoginForm.
+ * Args: none. Returns: page JSX.
+ */
 export default function LoginPage() {
   return (
     <section className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-16">

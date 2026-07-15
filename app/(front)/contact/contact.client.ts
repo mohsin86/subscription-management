@@ -1,5 +1,9 @@
 import type { ContactFormData } from '@/lib/validation/contact';
 
+/**
+ * submitContactForm — sends the contact form to the API.
+ * Args: data (ContactFormData). Returns: Promise<{ success: true }>
+ */
 export async function submitContactForm(data: ContactFormData) {
   const res = await fetch('/api/contact', {
     method: 'POST',

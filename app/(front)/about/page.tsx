@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description: profile.tagline,
 };
 
+/**
+ * AboutPage — portfolio About page (bio, skills, experience, education, certifications).
+ * Args: none. Returns: static page JSX built from lib/data/profile.ts.
+ */
 export default function AboutPage() {
   return (
     <section className="mx-auto max-w-3xl px-6 py-16">

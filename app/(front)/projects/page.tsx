@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description: "Personal projects and selected client work.",
 };
 
+/**
+ * ProjectsPage — portfolio Projects page (personal + client work).
+ * Args: none. Returns: static page JSX built from lib/data/profile.ts.
+ */
 export default function ProjectsPage() {
   return (
     <section className="mx-auto max-w-4xl px-6 py-16">
