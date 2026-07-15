@@ -1,7 +1,7 @@
 export const profile = {
   name: "Mohammed Mohasin",
   photo: "/images/mohammed-mohasin.jpg",
-  title: "Senior Full Stack Developer",
+  title: "Full Stack Developer",
   location: "Chattogram, Bangladesh",
   email: "devctg01@gmail.com",
   phone: "+8801815623468",
@@ -12,7 +12,7 @@ export const profile = {
   about: [
   "I got into web development in 2012 — started as a developer, and somewhere along the way ended up leading the team building the platforms I used to build myself. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
   "Day to day that's architecture calls, code reviews, sprint planning, and talking directly to clients — making sure what actually ships matches what they came to us for, not just what's easiest to build. A store that converts better, a checkout that doesn't lose people halfway through, a backend that holds up when traffic spikes instead of falling over. Mostly working in PHP, Node.js, Express, TypeScript, React, Next.js, NestJS, and AWS, with Jira, Asana, Trello, Slack, and Zoom keeping the team on the same page.",
-  "More recently I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I'm also finishing my PMP certification, mostly to put a formal label on the project management side I've already been doing for years.",
+  "I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I'm also finishing my PMP certification, mostly to put a formal label on the project management side I've already been doing for years.",
   ],
 
 };
