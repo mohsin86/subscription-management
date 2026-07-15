@@ -20,12 +20,15 @@ Do not create, edit, or delete application files directly (`app/`, `components/`
 - **Phase 7 (Dashboard)**: complete — per-currency spend totals, subscription list linking to `/subscriptions/[id]` detail pages.
 - **Phase 8 (Renewal status)**: complete — `lib/subscription-status.ts` derives `Active` / `Renewing soon` / `Expired` from `renewalDate`; shown on the subscriptions table, detail page, and dashboard.
 - **Phase 9 (Configurable reminder + email notifications)**: complete — `Subscription.reminderDaysBefore` (per-subscription setting), `app/api/cron/renewal-reminders/route.ts` (Vercel Cron → Resend email), `vercel.json` cron schedule.
+- **Phase 10 (Auth rate limiting + signup spam protection)**: deferred — see roadmap.
+- **Phase 11 (Telegram mobile notifications)**: complete — see roadmap for details.
 - **Also done, outside the original phase plan**:
   - Portfolio pivot — `(front)` route group rebuilt as a real portfolio (Home/About/Projects/CV); Google OAuth; Resend-based contact form; responsive Navbar/protected layout; Prisma seed data; `postinstall: prisma generate` fix for deploys.
   - Vendor link-out — `Subscription.vendorUrl` (optional), "Manage on vendor site" link on the detail page.
+  - In-app documentation page (`/docs`).
   - **Docker containerization** — see below.
-- **Not started**: Phase 10 onward (see roadmap below).
-- **Deployed**: not yet — pushed to `origin/initial-phase`, no Vercel project connected.
+- **Not started**: Phase 12 (see roadmap below).
+- **Deployed**: live at `mohammed-mohasin.vercel.app/subscription-management/login`, connected to Vercel.
 
 ## Containerization (Docker)
 
@@ -38,8 +41,8 @@ Do not create, edit, or delete application files directly (`app/`, `components/`
 
 ## Roadmap (Phase 10+)
 
-- **Phase 10 — Auth rate limiting + signup spam protection**: `@upstash/ratelimit` + Upstash Redis (free tier, no card required — plain in-memory rate limiting doesn't work reliably across serverless invocations) on the login and signup Server Actions. A honeypot field (hidden input real users never fill; reject if it's non-empty) as a zero-cost first line of defense on signup, with Cloudflare Turnstile (free CAPTCHA) as a stretch goal if spam persists.
-- **Phase 11 — Mobile notification channel**: Telegram Bot API (free — one HTTP call per notification, user links their Telegram chat ID once). Reuses the `reminderDaysBefore` setting from Phase 9.
+- **Phase 10 — Auth rate limiting + signup spam protection**: deferred — not worth the added infra (Upstash account, etc.) for a portfolio project with no real traffic. Revisit if this ever needs to handle real public signups.
+- **Phase 11 — Mobile notification channel**: complete — Telegram Bot API. `User.telegramChatId` (optional, set via `/settings`), `lib/notifications/telegram.ts` sends via the Bot API, `app/api/cron/renewal-reminders/route.ts` sends both email and Telegram for any user with a chat ID saved. Verified end-to-end with a real test subscription and a real Telegram message received.
 - **Phase 12 — Team subscriptions with full RBAC**: new `Team` + `TeamMember` (role: `OWNER` / `ADMIN` / `MEMBER`) models; `Subscription.teamId` (nullable — personal subscriptions unaffected). Only `OWNER`/`ADMIN` can create/edit/delete a team's subscriptions; `MEMBER` is read-only. Every mutation Route Handler needs a role check alongside the existing ownership check.
 
 See `interview-notes.md` for the detailed Q&A/reasoning behind decisions already made.
