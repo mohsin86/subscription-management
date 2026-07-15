@@ -61,9 +61,11 @@ export const skills: { category: string; items: string[] }[] = [
     ],
   },
   {
-    category: "Tools & Platforms",
-    items: ["Jira", "Asana", "Trello", "Slack", "Zoom", "Time Doctor", "Google Docs / Sheets"],
+    category: "Project Management & Collaboration Tools",
+    items: ["Jira", "Asana", "Trello", "Slack", "Zoom", "Time Doctor", "Google Docs / Sheets", "Microsoft Excel", "Microsoft Word"],
+
   },
+
 ];
 
 export const experience: {
