@@ -19,6 +19,15 @@ export default function LoginPage() {
         </p>
       </div>
       <LoginForm />
+
+      <div className="hidden sm:block w-full max-w-2xl mt-16">
+        <p className="text-center text-sm text-gray-500 mb-3">How it works</p>
+        <img
+          src="/subscription-flow.svg"
+          alt="How the subscription tracker works: add a subscription, status auto-tracked, daily cron scan, reminder sent via email and Telegram"
+          className="w-full h-auto"
+        />
+      </div>
     </section>
   );
 }

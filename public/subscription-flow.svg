@@ -1,0 +1,56 @@
+<svg width="1200" height="628" viewBox="0 0 1200 628" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>How the subscription tracker works</title>
+<desc>Flow diagram: add a subscription, auto status check, daily cron scan, email and Telegram reminder before renewal.</desc>
+<rect x="0" y="0" width="1200" height="628" fill="#ffffff"/>
+<text x="80" y="76" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="34" fill="#111111">How the subscription tracker works</text>
+<rect x="80" y="76" width="120" height="3" fill="#111111"/>
+
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M1 1L8 5L1 9" fill="none" stroke="#111111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<g>
+<rect x="60" y="220" width="240" height="200" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="80" y="258" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#777777">STEP 1</text>
+<text x="80" y="292" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="#111111">Add a subscription</text>
+<text x="80" y="326" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">Name, price, currency,</text>
+<text x="80" y="348" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">billing cycle, renewal date,</text>
+<text x="80" y="370" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">reminder window</text>
+</g>
+
+<line x1="300" y1="320" x2="352" y2="320" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="360" y="220" width="240" height="200" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="380" y="258" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#777777">STEP 2</text>
+<text x="380" y="292" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="#111111">Status auto-tracked</text>
+<text x="380" y="326" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#2e7d32">Active</text>
+<text x="380" y="348" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#b8860b">Renewing soon</text>
+<text x="380" y="370" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#b91c1c">Expired</text>
+</g>
+
+<line x1="600" y1="320" x2="652" y2="320" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="660" y="220" width="240" height="200" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+<text x="680" y="258" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#777777">STEP 3</text>
+<text x="680" y="292" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="#111111">Daily cron scan</text>
+<text x="680" y="326" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">Checks every subscription</text>
+<text x="680" y="348" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">against its reminder</text>
+<text x="680" y="370" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#444444">window</text>
+</g>
+
+<line x1="900" y1="320" x2="952" y2="320" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<g>
+<rect x="960" y="220" width="180" height="200" fill="#111111"/>
+<text x="980" y="258" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#bbbbbb">STEP 4</text>
+<text x="980" y="292" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="20" fill="#ffffff">Reminder sent</text>
+<text x="980" y="326" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#eeeeee">Email</text>
+<text x="980" y="348" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#eeeeee">Telegram</text>
+</g>
+
+<text x="80" y="480" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#555555">Next.js 16 &#183; Prisma 7 + Postgres &#183; NextAuth &#183; React Query &#183; Resend &#183; Vercel Cron</text>
+</svg>

@@ -28,7 +28,7 @@ export default function SignupForm() {
 
   return (
     <div className="flex flex-col gap-6 max-w-sm">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form id="signup-form" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
           <label htmlFor="name">Name</label>
           <input id="name" {...register("name")} className="border px-2 py-1 w-full" />
@@ -50,16 +50,19 @@ export default function SignupForm() {
           {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
         </div>
         {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
-        <button type="submit" disabled={isSubmitting} className="border px-4 py-2">
-          {isSubmitting ? "Creating account..." : "Sign up"}
-        </button>
       </form>
 
-      <form action={googleSignupAction}>
-        <button type="submit" className="border px-4 py-2 w-full">
-          Sign up with Google
+      <div className="flex gap-3">
+        <button type="submit" form="signup-form" disabled={isSubmitting} className="border px-4 py-2 flex-1">
+          {isSubmitting ? "Creating account..." : "Sign up"}
         </button>
-      </form>
+
+        <form action={googleSignupAction} className="flex-1">
+          <button type="submit" className="border px-4 py-2 w-full">
+            Sign up with Google
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

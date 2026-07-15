@@ -54,7 +54,7 @@ export default function LoginForm() {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form id="login-form" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div>
           <label htmlFor="email">Email</label>
           <input id="email" type="email" {...register("email")} className="border px-2 py-1 w-full" />
@@ -66,16 +66,19 @@ export default function LoginForm() {
           {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
         {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
-        <button type="submit" disabled={isSubmitting} className="border px-4 py-2">
-          {isSubmitting ? "Signing in..." : "Sign in"}
-        </button>
       </form>
 
-      <form action={googleLoginAction}>
-        <button type="submit" className="border px-4 py-2 w-full">
-          Sign in with Google
+      <div className="flex gap-3">
+        <button type="submit" form="login-form" disabled={isSubmitting} className="border px-4 py-2 flex-1">
+          {isSubmitting ? "Signing in..." : "Sign in"}
         </button>
-      </form>
+
+        <form action={googleLoginAction} className="flex-1">
+          <button type="submit" className="border px-4 py-2 w-full">
+            Sign in with Google
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
