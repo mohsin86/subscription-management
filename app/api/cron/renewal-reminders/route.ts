@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { getSubscriptionStatus } from "@/lib/subscription-status";
+import { sendTelegramMessage } from "@/lib/notifications/telegram";
 
 /**
  * GET /api/cron/renewal-reminders — emails each user whose subscriptions are renewing soon.
@@ -19,11 +20,11 @@ export async function GET(request: Request) {
     include: { user: true },
   });
 
-
   const dueByUser = new Map<
-    string,
-    { email: string; name: string | null; subs: typeof subscriptions }
-  >();
+  string,
+  { email: string; name: string | null; telegramChatId: string | null; subs: typeof subscriptions }
+>();
+
 
   for (const sub of subscriptions) {
     const status = getSubscriptionStatus(sub.renewalDate, sub.reminderDaysBefore);
@@ -32,6 +33,7 @@ export async function GET(request: Request) {
     const existing = dueByUser.get(sub.userId) ?? {
       email: sub.user.email,
       name: sub.user.name,
+      telegramChatId: sub.user.telegramChatId, 
       subs: [],
     };
     existing.subs.push(sub);
@@ -39,7 +41,7 @@ export async function GET(request: Request) {
   }
 
   let sent = 0;
-  for (const { email, name, subs } of dueByUser.values()) {
+  for (const { email, name, telegramChatId, subs } of dueByUser.values()) {
     const listHtml = subs
       .map(
         (s) =>
@@ -55,6 +57,14 @@ export async function GET(request: Request) {
     });
 
     if (!error) sent += 1;
+
+    if (telegramChatId) {
+        const listText = subs
+          .map((s) => `- ${s.name}: ${s.price.toFixed(2)} ${s.currency}, renews ${s.renewalDate.toLocaleDateString()}`)
+          .join("\n");
+        await sendTelegramMessage(telegramChatId, `${subs.length} subscription(s) renewing soon:\n${listText}`);
+      }
+
   }
 
   return NextResponse.json({ sent });

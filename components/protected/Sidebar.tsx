@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CreditCard, BookOpen } from "lucide-react";
+import { LayoutDashboard, CreditCard, BookOpen, Settings } from "lucide-react";
+
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
+  { href: "/settings", label: "Settings", icon: Settings },
   { href: "/docs", label: "Documentation", icon: BookOpen },
+
 ];
 
 export default function Sidebar() {

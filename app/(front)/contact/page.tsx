@@ -6,6 +6,10 @@ import { ContactSchema, type ContactFormData } from '@/lib/validation/contact';
 import { useSubmitContact } from './hooks/useSubmitContact';
 import { profile } from '@/lib/data/profile';
 
+/**
+ * ContactPage — public contact form (name/email/phone/message).
+ * Args: none. Returns: form JSX; submits via useSubmitContact(), shows a success state after sending.
+ */
 export default function ContactPage() {
   const {
     register,

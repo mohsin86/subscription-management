@@ -6,6 +6,10 @@ import { useState } from "react";
 import { SignupSchema, type SignupFormData } from "@/lib/validation/auth";
 import { signupAction, googleSignupAction } from "./actions";
 
+/**
+ * SignupForm — email/password + Google signup form.
+ * Args: none. Returns: form JSX; calls signupAction or googleSignupAction on submit.
+ */
 export default function SignupForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const {

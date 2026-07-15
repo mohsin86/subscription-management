@@ -2,6 +2,10 @@ import { auth } from "@/auth";
 import Sidebar from "@/components/protected/Sidebar";
 import Topbar from "@/components/protected/Topbar";
 
+/**
+ * ProtectedLayout — shared layout for the logged-in subscription tracker route group.
+ * Args: children (React.ReactNode). Returns: JSX wrapping children with Topbar + Sidebar.
+ */
 export default async function ProtectedLayout({
   children,
 }: {

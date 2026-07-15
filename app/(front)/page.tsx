@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   description: profile.tagline,
 };
 
+/**
+ * HomePage — portfolio landing page.
+ * Args: none. Returns: static hero section JSX built from lib/data/profile.ts.
+ */
 export default function HomePage() {
   return (
     <section className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-24">

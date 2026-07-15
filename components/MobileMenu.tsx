@@ -17,6 +17,10 @@ const authLinks = [
   { href: "/subscription-management/signup", label: "Sign up" },
 ];
 
+/**
+ * MobileMenu — collapsible nav menu for the portfolio site on small screens.
+ * Args: none. Returns: toggle button + dropdown nav JSX.
+ */
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
