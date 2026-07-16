@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CreditCard, BookOpen, Settings } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { LayoutDashboard, CreditCard, BookOpen, Settings, User, GraduationCap } from "lucide-react";
+import { INTERVIEW_PRACTICE_EMAIL } from "@/lib/interview-practice";
 
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
+  { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/docs", label: "Documentation", icon: BookOpen },
 
@@ -15,11 +18,17 @@ const links = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const showInterviewPractice = session?.user?.email === INTERVIEW_PRACTICE_EMAIL;
+
+  const visibleLinks = showInterviewPractice
+    ? [...links, { href: "/interview-practice", label: "Interview Practice", icon: GraduationCap }]
+    : links;
 
   return (
     <aside className="hidden w-60 shrink-0 border-r p-4 md:block">
       <nav className="flex flex-col gap-1">
-        {links.map(({ href, label, icon: Icon }) => {
+        {visibleLinks.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link

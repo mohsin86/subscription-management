@@ -23,8 +23,8 @@ export async function updateSettingsAction(
 
   await prisma.user.update({
     where: { id: session.user.id },
-    data: { telegramChatId: parsed.data.telegramChatId || null, 
-            telegramEnabled: parsed.data.telegramEnabled 
+    data: { telegramChatId: parsed.data.telegramChatId || null,
+            telegramEnabled: parsed.data.telegramEnabled
           },
   });
 

@@ -128,3 +128,74 @@
     @apply font-sans;
   }
 }
+
+/* Rendered markdown for the Interview Practice pages (content/interview-practice/*.md via `marked`). */
+.interview-content {
+  line-height: 1.7;
+}
+.interview-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.interview-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.interview-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.interview-content p {
+  margin-bottom: 0.9rem;
+}
+.interview-content strong {
+  font-weight: 600;
+}
+.interview-content ul,
+.interview-content ol {
+  margin: 0.75rem 0 0.9rem 1.5rem;
+}
+.interview-content ul {
+  list-style: disc;
+}
+.interview-content ol {
+  list-style: decimal;
+}
+.interview-content li {
+  margin-bottom: 0.35rem;
+}
+.interview-content a {
+  text-decoration: underline;
+  color: var(--primary);
+}
+.interview-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+.interview-content code {
+  font-family: var(--font-mono);
+  background: var(--muted);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+.interview-content pre {
+  font-family: var(--font-mono);
+  background: var(--muted);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.interview-content pre code {
+  background: none;
+  padding: 0;
+}
