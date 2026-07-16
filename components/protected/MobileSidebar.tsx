@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CreditCard, BookOpen, Settings } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { LayoutDashboard, CreditCard, BookOpen, Settings, User, GraduationCap } from "lucide-react";
+import { INTERVIEW_PRACTICE_EMAIL } from "@/lib/interview-practice";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
+  { href: "/profile", label: "Profile", icon: User },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/docs", label: "Documentation", icon: BookOpen },
 ];
@@ -19,6 +22,12 @@ const links = [
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const showInterviewPractice = session?.user?.email === INTERVIEW_PRACTICE_EMAIL;
+
+  const visibleLinks = showInterviewPractice
+    ? [...links, { href: "/interview-practice", label: "Interview Practice", icon: GraduationCap }]
+    : links;
 
   return (
     <div className="md:hidden">
@@ -37,7 +46,7 @@ export default function MobileSidebar() {
       {open && (
         <div className="absolute inset-x-0 top-full z-10 border-b bg-white p-4 shadow-md dark:bg-zinc-950">
           <nav className="flex flex-col gap-1">
-            {links.map(({ href, label, icon: Icon }) => {
+            {visibleLinks.map(({ href, label, icon: Icon }) => {
               const active = pathname === href;
               return (
                 <Link

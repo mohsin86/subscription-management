@@ -194,7 +194,7 @@ export const clientProjects: {
       "UK-based retailer of e-bikes and electric bikes — stock control, customer reviews, test-ride booking, and a full product catalogue across online and offline sales.",
     tech: ["PHP", "OpenCart", "SASS", "JavaScript"],
     url: "https://www.fullycharged.com/",
-    hidden: true,
+    hidden: false,
   },
   {
     name: "Al Musaidah Foundation",
@@ -219,7 +219,7 @@ export const clientProjects: {
       "Art gallery eCommerce site showcasing original art from British and international artists. Built a custom plugin with a scheduled cron job that syncs the latest catalogue data from Artlogic automatically — no manual admin work needed.",
     tech: ["PHP", "WordPress", "WooCommerce", "JavaScript"],
     url: "https://www.forestgallery.com/",
-    hidden: true,
+    hidden: false,
   },
   {
     name: "Chartwell Speakers",
@@ -228,7 +228,7 @@ export const clientProjects: {
       "Speaker agency site listing thousands of speakers with their lectures, books, and videos, plus a searchable directory and fee/availability request forms.",
     tech: ["PHP", "WordPress", "JavaScript"],
     url: "https://www.chartwellspeakers.com/",
-    hidden: true,
+    hidden: false,
   },
   {
     name: "Product Scrapper",
@@ -244,7 +244,7 @@ export const clientProjects: {
       "Corporate site for a global technology company listing their full service portfolio — BI, data center, network, cloud infrastructure, and IT security solutions — along with their partner/distributor network.",
     tech: ["PHP", "WordPress", "JavaScript"],
     url: "https://www.aiimglobal.com/",
-    hidden: true,
+    hidden: false,
   },
   {
     name: "Sneho",
@@ -253,7 +253,7 @@ export const clientProjects: {
       "Parenting and baby-essentials eCommerce platform with full product/stock management and user-role controls.",
     tech: ["PHP", "WordPress", "WooCommerce", "JavaScript"],
     url: "https://sneho.com.bd/",
-    hidden: true,
+    hidden: false,
   },
   {
     name: "School Management System",

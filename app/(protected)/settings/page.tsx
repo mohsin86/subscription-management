@@ -16,7 +16,6 @@ export default async function SettingsPage() {
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { telegramChatId: true, telegramEnabled: true },
-
   });
 
   return (
@@ -34,7 +33,6 @@ export default async function SettingsPage() {
 
       <div className="mt-6">
         <SettingsForm defaultChatId={user?.telegramChatId ?? null} defaultEnabled={user?.telegramEnabled ?? true} />
-
       </div>
     </section>
   );
