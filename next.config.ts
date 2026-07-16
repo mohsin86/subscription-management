@@ -7,6 +7,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  async redirects() {
+    return [
+      {
+        source: '/subscription-management',
+        destination: '/subscription-management/login',
+        permanent: false, // Use false (307 Temporary Redirect) so browsers don't cache it forever
+      },
+    ];
+  }, 
 };
 
 export default nextConfig;
