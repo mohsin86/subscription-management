@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getSubscriptionStatus, STATUS_LABEL, STATUS_COLOR } from "@/lib/subscription-status";
+import { buildGoogleCalendarUrl } from "@/lib/calendar-link";
 
 /**
  * SubscriptionDetailPage — shows one subscription's full details.
@@ -83,6 +84,21 @@ export default async function SubscriptionDetailPage(
               Manage on vendor site &rarr;
             </a>
           )}
+
+          <a
+            href={buildGoogleCalendarUrl(
+              subscription.name,
+              subscription.price.toFixed(2),
+              subscription.currency,
+              subscription.renewalDate
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-4 ml-2 border px-4 py-2"
+          >
+            Add to Google Calendar
+          </a>
+
 
     </section>
   );

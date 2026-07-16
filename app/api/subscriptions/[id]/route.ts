@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { SubscriptionSchema } from "@/lib/validation/subscription";
+import { DEMO_EMAIL } from "@/lib/demo-account";
 
 /**
  * PATCH /api/subscriptions/[id] — updates one subscription owned by the logged-in user.
@@ -51,6 +52,13 @@ export async function DELETE(
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (session.user.email === DEMO_EMAIL) {
+    return NextResponse.json(
+      { error: "Deleting is disabled for the demo account." },
+      { status: 403 }
+    );
   }
 
   const { id } = await params;

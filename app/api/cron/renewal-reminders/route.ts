@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
   const dueByUser = new Map<
   string,
-  { email: string; name: string | null; telegramChatId: string | null; subs: typeof subscriptions }
+  { email: string; name: string | null; telegramChatId: string | null; telegramEnabled: boolean; subs: typeof subscriptions }
 >();
 
 
@@ -33,7 +33,8 @@ export async function GET(request: Request) {
     const existing = dueByUser.get(sub.userId) ?? {
       email: sub.user.email,
       name: sub.user.name,
-      telegramChatId: sub.user.telegramChatId, 
+      telegramChatId: sub.user.telegramChatId,
+      telegramEnabled: sub.user.telegramEnabled,
       subs: [],
     };
     existing.subs.push(sub);
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
   }
 
   let sent = 0;
-  for (const { email, name, telegramChatId, subs } of dueByUser.values()) {
+  for (const { email, name, telegramChatId, telegramEnabled, subs } of dueByUser.values()) {
     const listHtml = subs
       .map(
         (s) =>
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
 
     if (!error) sent += 1;
 
-    if (telegramChatId) {
+    if (telegramChatId && telegramEnabled) {
         const listText = subs
           .map((s) => `- ${s.name}: ${s.price.toFixed(2)} ${s.currency}, renews ${s.renewalDate.toLocaleDateString()}`)
           .join("\n");
