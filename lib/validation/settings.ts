@@ -6,6 +6,10 @@ import { z } from "zod";
  */
 export const SettingsSchema = z.object({
   telegramChatId: z.string().optional(),
+  telegramEnabled: z.boolean().default(true),
 });
+
+
+
 
 export type SettingsFormData = z.infer<typeof SettingsSchema>;
