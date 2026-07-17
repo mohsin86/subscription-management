@@ -12,7 +12,7 @@ export const profile = {
   about: [
   "I got into web development in 2012 — started as a developer, and somewhere along the way ended up leading the team building the platforms I used to build myself. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
   "Day to day that's architecture calls, code reviews, sprint planning, and talking directly to clients — making sure what actually ships matches what they came to us for, not just what's easiest to build. A store that converts better, a checkout that doesn't lose people halfway through, a backend that holds up when traffic spikes instead of falling over. Mostly working in PHP, Node.js, Express, TypeScript, React, Next.js, NestJS, and AWS, with Jira, Asana, Trello, Slack, and Zoom keeping the team on the same page.",
-  "I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I'm also finishing my PMP certification, mostly to put a formal label on the project management side I've already been doing for years.",
+  "I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I've also completed my PMP exam prep, mostly to put a formal label on the project management side I've already been doing for years.",
   ],
 
 };
@@ -72,6 +72,7 @@ export const skills: { category: string; items: string[] }[] = [
 export const experience: {
   role: string;
   company: string;
+  type?: string;
   location?: string;
   period: string;
   bullets: string[];
@@ -79,26 +80,28 @@ export const experience: {
   {
     role: "Senior Software Engineer",
     company: "SEBPO",
+    type: "Full-time",
+    location: "Dhaka, Bangladesh · Hybrid",
     period: "Sep 2015 – Present",
     bullets: [
-      "Manage and coordinate development teams day to day — task assignment, sprint planning, and keeping delivery on track across multiple projects",
-      "Design system architecture and database schemas for large-scale web and eCommerce platforms built on PHP, Node.js, and WordPress",
-      "Work directly with international clients to gather requirements, set expectations, and keep communication clear throughout delivery",
-      "Handle vendor relationships and third-party integrations — payment gateways, APIs, automation tools",
-      "Run regular code reviews, identify bottlenecks, and push performance improvements across the team's output",
+      "Coordinate a team of 8 developers day to day — task assignment, sprint planning, and delivery tracking across up to 5 concurrent projects",
+      "Design system architecture and database schemas for 4 eCommerce/business platforms — including fullycharged.com, forestgallery.com, chartwellspeakers.com, and snehomart.com — serving roughly 2,000–3,000 daily users",
+      "Work directly with clients across the US, Australia, and other regions to gather requirements and manage delivery expectations",
+      "Manage vendor communication for third-party integrations — a payment gateway and an SMS gateway (OTP-based login authentication)",
+      "Run code reviews across the team, identifying bottlenecks — improved page load performance by roughly 25–30% on a legacy project",
     ],
   },
   {
     role: "Frontend Developer",
     company: "Compare Club",
+    type: "Contract",
     location: "Remote — Sydney, Australia",
     period: "Jul 2021 – Jul 2022",
     bullets: [
-      "Worked on WordPress-based platforms — built custom plugins, themes, WooCommerce features, and ACF integrations",
-      "Used AWS Lambda for serverless functions and S3 + CloudFront for static content delivery on a high-traffic financial platform",
-      "Set up CI/CD pipelines with Lambda automation to make deployments faster and less manual",
-      "Turned Figma/UI designs into fast, accessible web pages — ran Lighthouse audits and fixed what was slowing things down",
-      "Helped maintain YourLifeChoices, one of Australia's larger lifestyle platforms, during high-traffic periods",
+      "Built custom WordPress plugins, themes, and ACF integrations for YourLifeChoices (yourlifechoices.com.au), one of Australia's larger lifestyle platforms",
+      "Used AWS Lambda for serverless functions and S3 + CloudFront for static content delivery, supporting 5,000+ users including during high-traffic periods",
+      "Maintained CI/CD pipelines with Lambda automation, helping cut deployment time by 40%",
+      "Converted Figma/UI designs into accessible web pages; ran Lighthouse audits and brought performance scores up to 98",
     ],
   },
   {
@@ -106,8 +109,8 @@ export const experience: {
     company: "Dropndot Solutions",
     period: "Apr 2014 – Aug 2015",
     bullets: [
-      "Built websites and web apps for small businesses — this is where I got solid in PHP, JavaScript, HTML, and CSS",
-      "Worked closely with clients from brief to delivery — handled requirements, timelines, and handoffs",
+      "Built websites and web apps for 10 small businesses — this is where I got solid in PHP, JavaScript, HTML, and CSS",
+      "Delivered completed projects to senior engineers for client hand-off and final sign-off",
     ],
   },
 ];
@@ -121,7 +124,7 @@ export const education = [
 ];
 
 export const certifications = [
-  "PMP Exam Preparation — 35 Contact Hours (In Progress)",
+  "PMP Exam Preparation — 35 Contact Hours (Completed)",
   "AWS Fundamentals",
   "MongoDB Certifications",
   "DataCamp Python Courses",
