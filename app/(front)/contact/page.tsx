@@ -51,7 +51,14 @@ export default function ContactPage() {
           <a href={profile.github} target="_blank" rel="noopener noreferrer" className="font-medium hover:text-zinc-500">
             GitHub
           </a>
-          <p className="text-zinc-500">{profile.location}</p>
+          <a
+            href="https://maps.app.goo.gl/4HiFWMwtPKQS3GaB7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+          >
+            {profile.location}
+          </a>
         </div>
       </div>
 

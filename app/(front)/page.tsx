@@ -28,7 +28,27 @@ export default function HomePage() {
       </div>
 
       <p className="mt-2 text-sm text-zinc-500">
-        {profile.location} · {profile.email} · {profile.phone}
+        <a
+          href="https://maps.app.goo.gl/4HiFWMwtPKQS3GaB7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-zinc-900 dark:hover:text-zinc-100"
+        >
+          {profile.location}
+        </a>{" "}
+        ·{" "}
+        <a href={`mailto:${profile.email}`} className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          {profile.email}
+        </a>{" "}
+        ·{" "}
+        <a
+          href={`https://wa.me/${profile.phone.replace(/\D/g, "")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-zinc-900 dark:hover:text-zinc-100"
+        >
+          {profile.phone}
+        </a>
       </p>
 
       {profile.about.map((paragraph, index) => (
