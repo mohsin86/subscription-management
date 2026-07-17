@@ -10,9 +10,46 @@ export type ParsedQuestion = {
 const PAGE_ARTIFACT = /^\d+\/\d+$/;
 const TABLE_SEPARATOR = /^\|(\s*-+\s*\|)+$/;
 const TABLE_ROW = /^\|.*\|$/;
-const QUESTION_MARKER = /^\*\*\d+\.\s*(.+?)\*\*$/;
+const PREFIXED_QUESTION_MARKER = /^\*\*(?:[A-Za-z]*\d+)[:.]\s*(.+?)\*\*$/;
+// A bare bold line with no numbered/labeled prefix is only treated as a
+// question if it ends in a literal "?" — real questions always do, but an
+// incidental standalone bold sub-label mid-answer (e.g. "**Creating a Custom
+// Writable Stream:**") usually doesn't, so this keeps false positives low.
+const BARE_QUESTION_MARKER = /^\*\*(.+\?)\*\*$/;
+
+/**
+ * matchQuestionMarker — recognizes any of the three question-marker styles
+ * seen across source files: "**1. text**", "**JS1: text**", "**text?**".
+ */
+function matchQuestionMarker(line: string): string | null {
+  const prefixed = line.match(PREFIXED_QUESTION_MARKER);
+  if (prefixed) return prefixed[1].trim();
+  const bare = line.match(BARE_QUESTION_MARKER);
+  if (bare) return bare[1].trim();
+  return null;
+}
 const SECTION_HEADING = /^#\s+(.+)$/;
 const TITLE_PREFIX = /^(.*? Interview Prep)(.*)$/;
+
+/**
+ * decodeHtmlEntities — some source files already had inline HTML examples
+ * entity-encoded (e.g. `&lt;div&gt;`) from how they were originally exported.
+ * That's harmless when rendered as plain paragraph text (marked leaves
+ * already-valid entities alone), but a real bug once such text ends up in
+ * `codeSnippet` and gets wrapped in a synthetic ``` fence for rendering —
+ * marked's fenced-code escaping is unconditional, so it double-escapes the
+ * leading `&`, turning `&lt;` into `&amp;lt;` (shown literally in the browser).
+ * Decoding here means the DB stores plain characters either way, so both
+ * rendering paths produce the same single, correct escape.
+ */
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&amp;/g, "&");
+}
 
 /**
  * stripPageArtifacts — removes stray page-footer lines (e.g. "3/105") left
@@ -84,10 +121,24 @@ function isCodeLine(line: string): boolean {
 
 /**
  * extractCode — splits an answer's text into prose and code, grouping
- * consecutive code-like lines into a single codeSnippet block.
+ * consecutive bare code-like lines into a codeSnippet block. Lines inside a
+ * real ``` fence are never touched by the heuristic — they stay in `text`
+ * verbatim so `marked` renders them as a proper code block on its own.
  */
 function extractCode(answer: string): { text: string; code: string | null } {
   const lines = answer.split("\n");
+
+  const inFence: boolean[] = [];
+  let fenced = false;
+  for (const line of lines) {
+    if (/^```/.test(line.trim())) {
+      inFence.push(true);
+      fenced = !fenced;
+    } else {
+      inFence.push(fenced);
+    }
+  }
+
   const textLines: string[] = [];
   const codeBlocks: string[] = [];
   let buffer: string[] = [];
@@ -103,8 +154,8 @@ function extractCode(answer: string): { text: string; code: string | null } {
     buffer = [];
   }
 
-  for (const line of lines) {
-    const code = isCodeLine(line);
+  lines.forEach((line, i) => {
+    const code = inFence[i] ? false : isCodeLine(line);
     if (buffer.length === 0) {
       bufferIsCode = code;
       buffer.push(line);
@@ -115,7 +166,7 @@ function extractCode(answer: string): { text: string; code: string | null } {
       bufferIsCode = code;
       buffer.push(line);
     }
-  }
+  });
   flush();
 
   return {
@@ -191,10 +242,10 @@ function parseQuestionsFromSection(body: string): { question: string; answer: st
   }
 
   for (const line of lines) {
-    const match = line.trim().match(QUESTION_MARKER);
-    if (match) {
+    const question = matchQuestionMarker(line.trim());
+    if (question !== null) {
       flush();
-      currentQuestion = match[1].trim();
+      currentQuestion = question;
       continue;
     }
     if (currentQuestion !== null) {
@@ -237,7 +288,7 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
  * Returns: ParsedQuestion[].
  */
 export function parseMarkdownFile(rawMarkdown: string): ParsedQuestion[] {
-  const cleaned = fixBrokenTables(stripPageArtifacts(unescapeMarkdown(rawMarkdown)));
+  const cleaned = fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown))));
   const sections = splitIntoSections(cleaned);
 
   const results: ParsedQuestion[] = [];

@@ -2430,9 +2430,7 @@ Use monitoring tools like **PM2**, **New Relic**, or **AppDynamics**.
 
 Worker threads in Node.js provide a way to execute JavaScript code in parallel, leveraging multiple threads in a single Node.js process. This is useful for CPU-intensive tasks.
 
-**Why Use Worker Threads?**
-
-Node.js is single-threaded for JavaScript execution. Worker threads allow offloading heavy tasks, preventing them from blocking the main thread.
+Why use worker threads? Node.js is single-threaded for JavaScript execution. Worker threads allow offloading heavy tasks, preventing them from blocking the main thread.
 
 **How to Use Worker Threads:**
 
@@ -4157,3 +4155,90 @@ callback();
 const writableStream = new MyWritableStream();
 
 80/105
+
+**What's the difference between CommonJS and ES Modules in Node?**
+require()/module.exports (CommonJS) is Node's original, synchronous module system. import/export (ES Modules) is the JS standard, loaded asynchronously — enable it per-project with "type": "module" in package.json, or per-file with a .mjs extension.
+
+**What is a Buffer, and how does it differ from a JS string?**
+A Buffer holds raw binary data (bytes) directly, while a string is always a sequence of UTF-16 code units — Buffers are used for anything binary (file contents, network data, images) that a string can't represent safely.
+
+**What is Node's permissions model?**
+An experimental flag-gated feature that restricts what a Node process is allowed to do (file system access, network, child processes) at the runtime level — aimed at limiting the blast radius if a dependency turns out to be malicious.
+
+**What's the difference between exports and module.exports?**
+module.exports is the actual object require() returns. exports is just a shortcut variable pointing to the same object initially — reassigning exports = {...} breaks that link, so always reassign module.exports directly when replacing the whole export.
+
+**How does top-level await work in Node ESM modules?**
+In an ES module (not CommonJS), you can use await directly at the top level of a file, outside any async function — useful for things like awaiting a database connection before the rest of the module runs.
+
+**What's the difference between spawn, exec, and fork for child processes?**
+spawn streams output as it's produced (good for long-running processes). exec buffers the entire output and returns it once the process finishes (simpler for short commands). fork is a special case of spawn for launching another Node script, with a built-in message channel.
+
+**How do you implement graceful shutdown in a Node HTTP server?**
+Listen for SIGTERM, stop accepting new connections, let in-flight requests finish, close database connections, then exit — instead of the process dying mid-request when a deploy or scale-down kills it abruptly.
+```
+process.on('SIGTERM', async () => {
+  server.close(() => process.exit(0));
+});
+```
+
+**What is N-API, and why does it matter for native addons?**
+A stable C API for building native (C/C++) addons for Node that isn't tied to a specific V8 version — addons built against N-API keep working across Node upgrades without needing to be recompiled for every version.
+
+**How do you profile a Node.js application to find a CPU bottleneck?**
+Run Node with --prof to generate a V8 profiling log, or use a tool like clinic.js, to see exactly which functions are consuming CPU time — essential before trying to optimize code based on a guess.
+
+**What's the difference between process.env and a .env file?**
+Node doesn't natively load .env files — a library like dotenv reads it and copies its values into process.env at startup (newer Node versions added a built-in --env-file flag that does this natively too).
+
+**ND1: Is Node single-threaded?**
+Your JS runs on one thread, but I/O (files, network, DB) is handled in the background by the OS/libuv, and callbacks are queued back onto that one thread — that's how Node handles many requests without blocking.
+
+**ND2: process.nextTick vs microtask vs setImmediate?**
+`process.nextTick` runs first, then Promise callbacks (microtasks), then `setImmediate` runs after I/O in the next loop iteration.
+
+**ND3: How do you handle async errors?**
+Wrap `await` in try/catch, or attach `.catch()` to a Promise chain.
+```js
+try {
+  const user = await prisma.user.findUnique({ where: { id } });
+} catch (err) {
+  console.error('DB lookup failed', err);
+}
+```
+
+**ND4: How does middleware work in a request pipeline?**
+Each middleware runs in order, can inspect/modify the request, and calls `next()` to pass control along (or ends the response early, e.g. on auth failure).
+
+**ND5: What causes a memory leak in Node?**
+Ever-growing global caches/arrays, event listeners never removed, closures holding large objects. Diagnose with `--inspect` and a heap snapshot.
+
+**ND6: CommonJS vs ESM?**
+`require`/`module.exports` (CommonJS) is Node's original, synchronous system. `import`/`export` (ESM) is the modern standard, loaded asynchronously.
+
+**ND7: What are streams for?**
+Process data in small chunks instead of loading a whole file into memory — essential for large files.
+
+**ND8: Clustering vs worker threads?**
+Clustering runs multiple full Node processes (own memory each) across CPU cores for more requests. Worker threads run separate threads in one process, sharing memory — better for CPU-heavy work.
+
+**ND9: How do you secure a Node API?**
+Validate/sanitize all input (this project uses Zod), use parameterized queries (Prisma does this automatically), never trust client-side validation alone.
+
+**ND10: How do you manage config/secrets?**
+Environment variables, never committed to git, with different values loaded per environment (dev/staging/prod).
+
+**ND11: exports vs module.exports?**
+`module.exports` is the actual object `require()` returns; `exports` is a shortcut reference to it. Reassigning `exports = {...}` breaks the link — always reassign `module.exports` instead.
+
+**ND12: What is a Buffer?**
+A fixed chunk of raw binary data that JS strings can't represent directly — used for files, images, network data.
+
+**ND13: spawn vs exec vs fork?**
+`spawn` streams output (good for long-running commands). `exec` buffers all output and returns it at once (good for short commands). `fork` runs another Node script that can message the parent.
+
+**ND14: What is backpressure?**
+When a stream produces data faster than it's consumed, Node signals "pause" until the receiver catches up, avoiding unlimited memory buffering.
+
+**ND15: REST vs GraphQL?**
+REST exposes fixed endpoints per resource, simple and cache-friendly. GraphQL exposes one endpoint where the client asks for exactly the fields it needs, at the cost of more server complexity.
