@@ -144,7 +144,7 @@ export default function DocsPage() {
             </div>
             <div className="py-2">
               <dt className="font-medium">Billing cycle</dt>
-              <dd className="text-gray-500">How often it charges — Monthly or Yearly.</dd>
+              <dd className="text-gray-500">How often it charges — Monthly, every 2/3/6 months, or Yearly.</dd>
             </div>
             <div className="py-2">
               <dt className="font-medium">Renewal date</dt>

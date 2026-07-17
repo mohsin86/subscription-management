@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getSubscriptionStatus, STATUS_LABEL, STATUS_COLOR } from "@/lib/subscription-status";
 import { buildGoogleCalendarUrl } from "@/lib/calendar-link";
+import { formatBillingCycle } from "@/lib/billing-cycle";
 
 /**
  * SubscriptionDetailPage — shows one subscription's full details.
@@ -57,7 +58,7 @@ export default async function SubscriptionDetailPage(
         </div>
         <div className="flex justify-between border-b py-2">
           <dt className="text-gray-500">Billing cycle</dt>
-          <dd>{subscription.cycle === "MONTHLY" ? "Monthly" : "Yearly"}</dd>
+          <dd>{formatBillingCycle(subscription.billingCycleMonths)}</dd>
         </div>
         <div className="flex justify-between border-b py-2">
           <dt className="text-gray-500">Renews</dt>

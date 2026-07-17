@@ -1,15 +1,10 @@
-enum BillingCycle {
-  MONTHLY
-  YEARLY
-}
-
 model Subscription {
   id         String       @id @default(cuid())
   name       String
   category   String
   price      Decimal
   currency   String
-  cycle      BillingCycle
+  billingCycleMonths Int  @default(1)
   renewalDate DateTime
   autoRenew  Boolean      @default(true)
   reminderDaysBefore Int  @default(7)

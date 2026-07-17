@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SubscriptionSchema } from "@/lib/validation/subscription";
+import { BILLING_CYCLE_OPTIONS } from "@/lib/billing-cycle";
 import type { Subscription } from "./subscriptions.client";
 import { useCreateSubscription } from "./hooks/useCreateSubscription";
 import { useUpdateSubscription } from "./hooks/useUpdateSubscription";
@@ -41,14 +42,14 @@ export default function SubscriptionForm({
       category: subscription.category,
       price: subscription.price,
       currency: subscription.currency,
-      cycle: subscription.cycle,
+      billingCycleMonths: subscription.billingCycleMonths,
       renewalDate: subscription.renewalDate.slice(0, 10),
       autoRenew: subscription.autoRenew,
       reminderDaysBefore: subscription.reminderDaysBefore,
       vendorUrl: subscription.vendorUrl ?? "",
       notes: subscription.notes ?? "",
     }
-  : { cycle: "MONTHLY", autoRenew: true, reminderDaysBefore: 7 },
+  : { billingCycleMonths: 1, autoRenew: true, reminderDaysBefore: 7 },
 
   });
 
@@ -91,12 +92,17 @@ export default function SubscriptionForm({
       </div>
 
       <div>
-        <label htmlFor="cycle">Billing cycle</label>
-        <select id="cycle" {...register("cycle")} className="border px-2 py-1 w-full">
-          <option value="MONTHLY">Monthly</option>
-          <option value="YEARLY">Yearly</option>
+        <label htmlFor="billingCycleMonths">Billing cycle</label>
+        <select id="billingCycleMonths" {...register("billingCycleMonths")} className="border px-2 py-1 w-full">
+          {BILLING_CYCLE_OPTIONS.map((option) => (
+            <option key={option.months} value={option.months}>
+              {option.label}
+            </option>
+          ))}
         </select>
-        {errors.cycle && <p className="text-red-500 text-sm">{errors.cycle.message}</p>}
+        {errors.billingCycleMonths && (
+          <p className="text-red-500 text-sm">{errors.billingCycleMonths.message}</p>
+        )}
       </div>
 
       <div>
