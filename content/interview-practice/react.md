@@ -1187,3 +1187,72 @@ Same as Q156 — a library like react-i18next, translation strings organized by 
 **200\. What are WebSockets, and how are they used in React?**
 
 Same as Q158 — a persistent bidirectional connection for real-time data, opened in a useEffect, updating component state as messages arrive, and closed in the cleanup function when the component unmounts.
+
+# Core Concepts
+
+**RC1: useEffect vs useLayoutEffect?**
+`useEffect` runs after the browser paints. `useLayoutEffect` runs before paint — only needed when you must measure/adjust the DOM before the user sees it.
+
+**RC2: What is the virtual DOM, and why do keys matter?**
+React keeps an in-memory copy of the UI, compares old vs new after a state change, and updates only what changed in the real DOM. Keys tell React which list item is which across renders.
+```jsx
+{items.map(item => <li key={item.id}>{item.name}</li>)}
+```
+
+**RC3: Controlled vs uncontrolled components?**
+Controlled = React state is the source of truth. Uncontrolled = the DOM holds the value, read via a ref.
+```jsx
+<input value={name} onChange={e => setName(e.target.value)} />
+```
+
+**RC4: useMemo/useCallback — when do they help?**
+They cache a value/function so it isn't recreated every render — only worth it for expensive calculations or when passing stable references to a memoized child.
+```jsx
+const total = useMemo(() => prices.reduce((a, b) => a + b, 0), [prices]);
+```
+
+**RC5: What problem does Context solve, and its pitfall?**
+Avoids passing props through many layers. Pitfall: every component reading the context re-renders whenever the value changes, even if it only needs part of it.
+
+**RC6: What causes a re-render?**
+A component's own state changes, its parent re-renders, or a context it reads changes. Debug with React DevTools' "highlight updates."
+
+**RC7: What rule must every custom hook follow?**
+Only call hooks at the top level — never inside loops/conditions — so React tracks them in the same order every render.
+```jsx
+function useToggle(initial = false) {
+  const [on, setOn] = useState(initial);
+  return [on, () => setOn(o => !o)];
+}
+```
+
+**RC8: useReducer vs useState?**
+`useState` is simplest for one value. `useReducer` is better when the next state depends on complex logic or several fields update together.
+
+**RC9: What is prop drilling?**
+Passing a prop through components that don't use it, just to reach a deeply nested child. Fixed with Context or a state library (this project uses Zustand).
+
+**RC10: What do error boundaries catch?**
+Render errors in child components. They do NOT catch errors in event handlers or async code (`fetch`, `setTimeout`) — those still need try/catch.
+
+**RC11: What is React Fiber?**
+React's internal engine (since v16) that can pause, split, and prioritize rendering work instead of blocking the main thread with one big synchronous render.
+
+**RC12: What is hydration, and what causes a mismatch?**
+The server sends fully-rendered HTML; React attaches event listeners to it instead of rebuilding the DOM. A mismatch happens when server HTML differs from what the client would render — e.g. using `Date.now()` during render.
+
+**RC13: What are portals for?**
+Render a component into a different DOM node than its parent — useful for modals that need to escape a parent's `overflow: hidden`.
+```jsx
+createPortal(<Modal />, document.getElementById('modal-root'));
+```
+
+**RC14: React.memo vs PureComponent?**
+Both skip re-rendering if props haven't shallowly changed. `memo` is for function components, `PureComponent` is the class equivalent.
+
+**RC15: What is code-splitting?**
+Load a component's code only when needed instead of in the initial bundle.
+```jsx
+const Settings = React.lazy(() => import('./Settings'));
+<Suspense fallback={<p>Loading...</p>}><Settings /></Suspense>
+```

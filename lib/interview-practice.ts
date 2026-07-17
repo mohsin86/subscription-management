@@ -29,4 +29,8 @@ export const INTERVIEW_PRACTICE_TOPICS: { slug: string; title: string }[] = [
   { slug: "tailwind", title: "Tailwind CSS" },
   { slug: "wordpress", title: "WordPress" },
   { slug: "design-principles", title: "Design Principles" },
+  { slug: "javascript", title: "JavaScript" },
+  { slug: "typescript", title: "TypeScript" },
+  { slug: "database-sql", title: "Database / SQL" },
+  { slug: "system-design", title: "System Design" },
 ];

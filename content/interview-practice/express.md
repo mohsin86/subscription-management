@@ -169,3 +169,53 @@ next();
 });
 
 In a real project you'd reach for something like morgan instead of hand-rolling this, but this is exactly the pattern it's built on.
+
+**What's the difference between application-level, router-level, and error-handling middleware?**
+Application-level middleware (app.use(...)) runs for every request on the whole app. Router-level middleware is scoped to one express.Router() instance. Error-handling middleware is any middleware function with 4 arguments (err, req, res, next) — Express only calls it when an error is passed to next(err).
+
+**How do you handle errors globally in Express?**
+Define a middleware with 4 parameters at the end of your middleware chain — Express skips straight to it whenever next(err) is called anywhere upstream.
+```
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+});
+```
+
+**What's the difference between express.json() and body-parser?**
+express.json() is Express's own built-in JSON body parser (added in Express 4.16+), functionally the same as the old separate body-parser package — body-parser is now largely redundant for JSON/urlencoded bodies since Express absorbed it.
+
+**How do you validate request bodies in Express?**
+Validate the request body/params/query with a schema library (Joi, Zod) inside a route or middleware, and respond with a 400 before any business logic runs if it fails — never trust that the client sent well-formed data.
+
+**How do you structure a large Express app?**
+Separate routes (endpoint definitions), controllers (request/response handling), and services (business logic/database calls) into their own folders/files, so a route file stays a short list of paths instead of hundreds of lines of logic.
+
+**What's the difference between res.send(), res.json(), and res.end()?**
+res.json() always serializes the argument as JSON with the right content-type header. res.send() is more flexible and infers content type from what you pass. res.end() just closes the response with no body.
+
+**How do you implement rate limiting in Express?**
+The express-rate-limit middleware tracks requests per IP (or another key) within a time window and returns a 429 once the limit is exceeded, protecting against abuse or accidental traffic spikes.
+
+**How do you secure an Express app?**
+helmet sets safer default HTTP headers, always validate/sanitize input, never build queries by string concatenation, serve everything over HTTPS, and keep dependencies patched since many real-world vulnerabilities come from outdated packages.
+
+**How does session management work in Express?**
+express-session stores a session ID in a cookie and keeps the actual session data server-side (in memory by default, or a store like Redis in production) — the cookie itself never holds sensitive data directly.
+
+**What's the difference between app.all() and defining the same route per method?**
+app.all('/path', handler) runs the handler for every HTTP method on that path in one line, useful for middleware-like logic (e.g. logging) that shouldn't care which verb was used.
+
+**How do you handle file uploads in Express?**
+multer is middleware that parses multipart/form-data requests and makes the uploaded file(s) available on req.file/req.files, since Express's built-in body parsers don't handle file uploads.
+
+**What is the purpose of express.static()?**
+Serves files directly from a folder (like public/) as-is over HTTP, without writing a route for every single file — used for images, CSS, client-side JS, etc.
+
+**How do you write tests for Express routes?**
+supertest lets you send real HTTP requests against your Express app in a test (without needing to actually start a server on a port) and assert on the response status/body, usually paired with Jest.
+
+**What are common API versioning strategies?**
+Either put the version in the URL (/api/v1/users) or in a request header. URL versioning is simpler and more visible/cacheable; header versioning keeps URLs clean but is less obvious when debugging.
+
+**How would you connect Express to a database?**
+Use a connection pool (most DB drivers/ORMs support this out of the box) so requests reuse a small set of open connections instead of opening a brand new one per request, which is far too slow at any real scale.

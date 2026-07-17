@@ -561,3 +561,50 @@ const \[user, posts\] = await Promise.all(\[getUser(), getPosts()\]);
 **99\. Sequential Data Fetching**
 
 When one fetch depends on the result of another, so they have to run one after the other - e.g. you need a user's ID from one call before you can fetch that user's orders. Slower than parallel by nature, so only do it when there's an actual dependency, not out of habit.
+
+# Core Concepts
+
+**NX1: Server vs Client Components?**
+Server Components run only on the server, can hit the database directly, and send no JS to the browser. Client Components (`'use client'`) run in the browser too, needed for `useState`, `onClick`, etc.
+
+**NX2: SSR vs SSG vs ISR?**
+SSG: built once at build time (fastest). SSR: rebuilt on every request (always fresh, slower). ISR: static, but auto-rebuilt in the background every N seconds (`revalidate`).
+
+**NX3: App Router vs Pages Router?**
+App Router (`app/`) supports Server Components, layouts, and streaming by default. Pages Router (`pages/`) is older — every page is a Client Component, no built-in layouts.
+
+**NX4: What is middleware for?**
+Code that runs before a request reaches a page — e.g. redirecting unauthenticated users. This project calls it `proxy.ts`.
+
+**NX5: How does caching/revalidation work?**
+Next.js caches data fetches by default; you can opt out per-request or force a re-fetch with `revalidatePath`/`revalidateTag` after a mutation.
+
+**NX6: Server Action vs Route Handler?**
+A Server Action is called directly from your own UI without writing a fetch. A Route Handler (`route.ts`) is a real HTTP endpoint any client can call — use it when something outside your UI (a cron job, a webhook) needs to hit it.
+
+**NX7: What does Suspense/streaming do?**
+Sends the page shell immediately and streams in slower parts as they finish, shown via a `loading.tsx` fallback, instead of waiting for everything.
+
+**NX8: What causes a hydration mismatch?**
+Server-rendered HTML differing from what the client renders — usually from non-deterministic values (current time, random) used during render.
+
+**NX9: How do dynamic routes work?**
+A folder like `[id]` matches any URL value (`/subscriptions/123`). `generateStaticParams` tells Next.js which specific values to pre-build at build time.
+
+**NX10: How are env variables handled safely?**
+Server-only variables (`DATABASE_URL`) never reach the browser. Only `NEXT_PUBLIC_`-prefixed variables are bundled into client-side JS.
+
+**NX11: What does next/image do?**
+Automatically resizes, compresses, lazy-loads images, and serves modern formats — instead of shipping one large file to everyone.
+
+**NX12: How do you handle SEO?**
+The Metadata API (`export const metadata = {...}`) sets `<title>`/`<meta>` tags per page; special files generate `sitemap.xml`/`robots.txt`.
+
+**NX13: Edge vs Node runtime?**
+Edge is lightweight and starts fast but can't use full Node APIs (like some database drivers). Node runtime supports everything but has a slower cold start.
+
+**NX14: What are route groups?**
+A folder in parentheses like `(protected)` groups routes under a shared layout without adding a URL segment.
+
+**NX15: What do error.tsx/not-found.tsx do?**
+Special files that automatically catch and display errors or 404s for a route segment, no manual try/catch needed in every page.
