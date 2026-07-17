@@ -15,7 +15,7 @@ export default function Topbar({ name, email }: TopbarProps) {
   return (
     <header className="relative flex items-center justify-between border-b px-4 py-4 sm:px-6">
       <div className="flex items-center gap-3">
-        <MobileSidebar />
+        <MobileSidebar email={email} />
         <Link href="/dashboard" className="font-bold">
           Subscription Tracker
         </Link>
