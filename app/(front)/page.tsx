@@ -74,6 +74,7 @@ export default function HomePage() {
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h3 className="text-sm font-semibold">
                 {job.role} · {job.company}
+                {job.type && ` · ${job.type}`}
                 {job.location && <span className="text-zinc-500"> ({job.location})</span>}
               </h3>
               <span className="text-xs text-zinc-500">{job.period}</span>
