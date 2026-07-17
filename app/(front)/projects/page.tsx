@@ -15,6 +15,7 @@ export default function ProjectsPage() {
   return (
     <section className="mx-auto max-w-4xl px-6 py-16">
       <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Projects</h1>
+      <p className="mt-4 max-w-xl text-zinc-600 dark:text-zinc-400">{profile.tagline}</p>
 
       <h2 className="mt-12 text-xl font-bold">Personal Projects</h2>
       <div className="mt-4 grid gap-6 sm:grid-cols-2">
@@ -62,7 +63,7 @@ export default function ProjectsPage() {
 
       <h2 className="mt-12 text-xl font-bold">Selected Client Work</h2>
       <p className="mt-2 text-sm text-zinc-500">
-        A selection from 10+ years leading client delivery at SEBPO. More available on request.
+        A selection from client delivery work at SEBPO and Compare Club.
       </p>
       <div className="mt-4 grid gap-6 sm:grid-cols-2">
         {clientProjects.filter((project) => !project.hidden).map((project) => (
