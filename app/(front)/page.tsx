@@ -1,7 +1,5 @@
-import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
-import { profile } from "@/lib/data/profile";
+import { profile, skills, experience, education, certifications, cvDownloadUrl } from "@/lib/data/profile";
 
 export const metadata: Metadata = {
   title: `${profile.name} — ${profile.title}`,
@@ -9,57 +7,83 @@ export const metadata: Metadata = {
 };
 
 /**
- * HomePage — portfolio landing page.
- * Args: none. Returns: static hero section JSX built from lib/data/profile.ts.
+ * HomePage — portfolio landing page: CV content only (name, skills, experience, education, certifications).
+ * Args: none. Returns: static page JSX built from lib/data/profile.ts.
  */
 export default function HomePage() {
   return (
-    <section className="flex flex-1 flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-24">
-      <Image
-        src={profile.photo}
-        alt={profile.name}
-        width={144}
-        height={144}
-        priority
-        className="h-28 w-28 rounded-full object-cover sm:h-36 sm:w-36"
-      />
-
-      <p className="mt-6 text-sm font-medium uppercase tracking-widest text-zinc-500">
-        {profile.title}
-      </p>
-      <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">
-        Hi, I&apos;m {profile.name}
-      </h1>
-      <p className="mt-4 max-w-xl text-zinc-600 dark:text-zinc-400">
-        {profile.tagline}
-      </p>
-
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-        <Link
-          href="/projects"
-          className="border border-zinc-900 bg-zinc-900 px-5 py-2 font-medium text-white hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+    <section className="mx-auto max-w-3xl px-6 py-16">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
+          <p className="text-zinc-500">{profile.title}</p>
+        </div>
+        <a
+          href={cvDownloadUrl}
+          download
+          className="border border-zinc-900 bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
         >
-          View Projects
-        </Link>
-        <Link href="/cv" className="border border-zinc-300 px-5 py-2 font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800">
-          View CV
-        </Link>
-        <Link href="/contact" className="border border-zinc-300 px-5 py-2 font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800">
-          Contact Me
-        </Link>
+          Download CV
+        </a>
       </div>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-zinc-500">
-        <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-          GitHub
-        </a>
-        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-          LinkedIn
-        </a>
-        <a href={`mailto:${profile.email}`} className="hover:text-zinc-900 dark:hover:text-zinc-100">
-          {profile.email}
-        </a>
+      <p className="mt-2 text-sm text-zinc-500">
+        {profile.location} · {profile.email} · {profile.phone}
+      </p>
+
+      {profile.about.map((paragraph, index) => (
+        <p key={index} className={`text-zinc-600 dark:text-zinc-400 ${index === 0 ? "mt-6" : "mt-3"}`}>
+          {paragraph}
+        </p>
+      ))}
+
+      <h2 className="mt-10 text-lg font-bold">Core Skills</h2>
+      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        {skills.map((group) => (
+          <div key={group.category}>
+            <h3 className="text-sm font-semibold">{group.category}</h3>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{group.items.join(" · ")}</p>
+          </div>
+        ))}
       </div>
+
+      <h2 className="mt-10 text-lg font-bold">Professional Experience</h2>
+      <div className="mt-3 flex flex-col gap-6">
+        {experience.map((job) => (
+          <div key={`${job.company}-${job.period}`}>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 className="text-sm font-semibold">
+                {job.role} · {job.company}
+                {job.location && <span className="text-zinc-500"> ({job.location})</span>}
+              </h3>
+              <span className="text-xs text-zinc-500">{job.period}</span>
+            </div>
+            <ul className="mt-1 list-disc pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+              {job.bullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="mt-10 text-lg font-bold">Education</h2>
+      {education.map((item) => (
+        <div key={item.school} className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <p className="text-sm font-semibold">{item.degree}</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">{item.school}</p>
+          </div>
+          <span className="text-xs text-zinc-500">{item.period}</span>
+        </div>
+      ))}
+
+      <h2 className="mt-10 text-lg font-bold">Certifications</h2>
+      <ul className="mt-3 list-disc pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+        {certifications.map((cert) => (
+          <li key={cert}>{cert}</li>
+        ))}
+      </ul>
     </section>
   );
 }

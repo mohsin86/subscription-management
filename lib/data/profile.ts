@@ -8,7 +8,7 @@ export const profile = {
   linkedin: "https://linkedin.com/in/mohammed-mohasin",
   github: "https://github.com/mohsin86",
   tagline:
-    "Senior full stack developer with 10+ years leading structured project delivery on eCommerce platforms and business websites, and building SaaS applications end-to-end.",
+    "I build things that work: eCommerce platforms, business websites, and SaaS apps focused on solving the actual problem, not just checking boxes.",
   about: [
   "I got into web development in 2012 — started as a developer, and somewhere along the way ended up leading the team building the platforms I used to build myself. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
   "Day to day that's architecture calls, code reviews, sprint planning, and talking directly to clients — making sure what actually ships matches what they came to us for, not just what's easiest to build. A store that converts better, a checkout that doesn't lose people halfway through, a backend that holds up when traffic spikes instead of falling over. Mostly working in PHP, Node.js, Express, TypeScript, React, Next.js, NestJS, and AWS, with Jira, Asana, Trello, Slack, and Zoom keeping the team on the same page.",
@@ -162,6 +162,26 @@ export const personalProjects: {
     liveUrl: "https://auto-garage-services.vercel.app/",
     githubUrl: "https://github.com/mohsin86/auto-garage-services",
   },
+  {
+    name: "Al Musaidah Foundation",
+    description:
+      "Website for a non-political, non-profit voluntary organization focused on community development in Bangladesh — supporting education, socioeconomic welfare, culture, sports, youth development, and humanitarian programs for underprivileged communities.",
+    tech: ["WordPress", "PHP", "Custom Plugin Development", "Bootstrap"],
+    liveUrl: "https://www.almusaidahfoundation.com/",
+  },
+  {
+    name: "Star Plus Home Care",
+    description:
+      "Site for a home health care provider offering non-medical personal and home care services to seniors and individuals in need of care, including transitional care from assisted living, hospitals, and similar settings — helping clients stay safely and comfortably in their own homes.",
+    tech: ["WordPress", "PHP", "Custom Plugin Development", "Bootstrap"],
+    liveUrl: "https://starplushomecare.com/",
+  },
+  {
+    name: "School Management System",
+    description:
+      "A school administration platform covering admissions, reporting, attendance, and login. Worked on the Admission and Report modules, fixed bugs in the Attendance and Login modules, and built student profile creation/update. The project was not released before I moved on from the role.",
+    tech: ["PHP", "JavaScript"],
+  },
 ];
 
 export const clientProjects: {
@@ -195,22 +215,6 @@ export const clientProjects: {
     tech: ["PHP", "OpenCart", "SASS", "JavaScript"],
     url: "https://www.fullycharged.com/",
     hidden: false,
-  },
-  {
-    name: "Al Musaidah Foundation",
-    category: "Website",
-    summary:
-      "Website for a non-political, non-profit voluntary organization focused on community development in Bangladesh — supporting education, socioeconomic welfare, culture, sports, youth development, and humanitarian programs for underprivileged communities.",
-    tech: ["WordPress", "PHP", "Custom Plugin Development", "Bootstrap"],
-    url: "https://www.almusaidahfoundation.com/",
-  },
-  {
-    name: "Star Plus Home Care",
-    category: "Website",
-    summary:
-      "Site for a home health care provider offering non-medical personal and home care services to seniors and individuals in need of care, including transitional care from assisted living, hospitals, and similar settings — helping clients stay safely and comfortably in their own homes.",
-    tech: ["WordPress", "PHP", "Custom Plugin Development", "Bootstrap"],
-    url: "https://starplushomecare.com/",
   },
   {
     name: "Forest Gallery",
@@ -254,13 +258,6 @@ export const clientProjects: {
     tech: ["PHP", "WordPress", "WooCommerce", "JavaScript"],
     url: "https://sneho.com.bd/",
     hidden: false,
-  },
-  {
-    name: "School Management System",
-    category: "Web Application",
-    summary:
-      "A school administration platform covering admissions, reporting, attendance, and login. Worked on the Admission and Report modules, fixed bugs in the Attendance and Login modules, and built student profile creation/update. The project was not released before I moved on from the role.",
-    tech: ["PHP", "JavaScript"],
   },
 ];
 

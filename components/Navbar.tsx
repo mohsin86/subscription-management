@@ -10,7 +10,6 @@ import MobileMenu from "./MobileMenu";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
-  { href: "/cv", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
