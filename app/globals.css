@@ -199,3 +199,16 @@
   background: none;
   padding: 0;
 }
+.interview-question {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.interview-question:last-child {
+  border-bottom: none;
+}
+.interview-question h3 {
+  margin-top: 0;
+}
+.interview-question > div:first-of-type {
+  color: var(--muted-foreground);
+}

@@ -1,15 +1,15 @@
-import fs from "fs";
-import path from "path";
 import { marked } from "marked";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
-import { INTERVIEW_PRACTICE_EMAIL, INTERVIEW_PRACTICE_TOPICS, unescapeMarkdown } from "@/lib/interview-practice";
+import { prisma } from "@/lib/prisma";
+import { INTERVIEW_PRACTICE_EMAIL, INTERVIEW_PRACTICE_TOPICS } from "@/lib/interview-practice";
 
 /**
- * InterviewPracticeTopicPage — renders one content/interview-practice/*.md file as HTML.
+ * InterviewPracticeTopicPage — renders one category's questions from the
+ * InterviewQuestion table, grouped by section.
  * Args: params.slug (string) — must match a slug in INTERVIEW_PRACTICE_TOPICS.
- * Returns: rendered markdown JSX; 404s for any account other than INTERVIEW_PRACTICE_EMAIL or an unknown slug.
+ * Returns: rendered Q&A list; 404s for any account other than INTERVIEW_PRACTICE_EMAIL or an unknown slug.
  */
 export default async function InterviewPracticeTopicPage(
   { params }: PageProps<"/interview-practice/[slug]">
@@ -25,9 +25,20 @@ export default async function InterviewPracticeTopicPage(
     notFound();
   }
 
-  const filePath = path.join(process.cwd(), "content", "interview-practice", `${slug}.md`);
-  const markdown = unescapeMarkdown(fs.readFileSync(filePath, "utf-8"));
-  const html = await marked.parse(markdown);
+  const questions = await prisma.interviewQuestion.findMany({
+    where: { category: topic.title },
+    orderBy: { order: "asc" },
+  });
+
+  const sections: { name: string | null; entries: typeof questions }[] = [];
+  for (const q of questions) {
+    const last = sections[sections.length - 1];
+    if (last && last.name === q.section) {
+      last.entries.push(q);
+    } else {
+      sections.push({ name: q.section, entries: [q] });
+    }
+  }
 
   return (
     <section className="max-w-3xl">
@@ -35,7 +46,46 @@ export default async function InterviewPracticeTopicPage(
         &larr; Back to Interview Practice
       </Link>
 
-      <div className="interview-content mt-4" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="interview-content mt-4">
+        <h1>{topic.title}</h1>
+
+        {sections.map((section, sectionIndex) => (
+          <div key={sectionIndex}>
+            {section.name && <h2>{section.name}</h2>}
+
+            {section.entries.map((q) => (
+              <InterviewQuestionCard key={q.id} question={q.question} answer={q.answer} codeSnippet={q.codeSnippet} />
+            ))}
+          </div>
+        ))}
+      </div>
     </section>
+  );
+}
+
+/**
+ * InterviewQuestionCard — renders one question/answer/codeSnippet row as HTML.
+ * Args: question, answer (markdown strings), codeSnippet (string | null).
+ * Returns: a styled card with the question as a heading, answer as prose, and code (if any) in its own box.
+ */
+async function InterviewQuestionCard({
+  question,
+  answer,
+  codeSnippet,
+}: {
+  question: string;
+  answer: string;
+  codeSnippet: string | null;
+}) {
+  const questionHtml = await marked.parseInline(question);
+  const answerHtml = answer ? await marked.parse(answer) : "";
+  const codeHtml = codeSnippet ? await marked.parse("```\n" + codeSnippet + "\n```") : null;
+
+  return (
+    <div className="interview-question">
+      <h3 dangerouslySetInnerHTML={{ __html: questionHtml }} />
+      {answerHtml && <div dangerouslySetInnerHTML={{ __html: answerHtml }} />}
+      {codeHtml && <div dangerouslySetInnerHTML={{ __html: codeHtml }} />}
+    </div>
   );
 }
