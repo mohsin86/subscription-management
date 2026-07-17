@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { LayoutDashboard, CreditCard, BookOpen, Settings, User, GraduationCap } from "lucide-react";
 import { INTERVIEW_PRACTICE_EMAIL } from "@/lib/interview-practice";
 
@@ -17,13 +16,13 @@ const links = [
 
 /**
  * MobileSidebar — collapsible nav menu for the protected app on small screens.
- * Args: none. Returns: toggle button + dropdown nav JSX.
+ * Args: email (string | null | undefined) — signed-in user's email, from the server session, used to gate the Interview Practice link.
+ * Returns: toggle button + dropdown nav JSX.
  */
-export default function MobileSidebar() {
+export default function MobileSidebar({ email }: { email?: string | null }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const showInterviewPractice = session?.user?.email === INTERVIEW_PRACTICE_EMAIL;
+  const showInterviewPractice = email === INTERVIEW_PRACTICE_EMAIL;
 
   const visibleLinks = showInterviewPractice
     ? [...links, { href: "/interview-practice", label: "Interview Practice", icon: GraduationCap }]

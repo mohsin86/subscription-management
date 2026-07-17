@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { LayoutDashboard, CreditCard, BookOpen, Settings, User, GraduationCap } from "lucide-react";
 import { INTERVIEW_PRACTICE_EMAIL } from "@/lib/interview-practice";
 
@@ -16,10 +15,14 @@ const links = [
 
 ];
 
-export default function Sidebar() {
+/**
+ * Sidebar — desktop nav for the protected app.
+ * Args: email (string | null | undefined) — signed-in user's email, from the server session, used to gate the Interview Practice link.
+ * Returns: nav JSX.
+ */
+export default function Sidebar({ email }: { email?: string | null }) {
   const pathname = usePathname();
-  const { data: session } = useSession();
-  const showInterviewPractice = session?.user?.email === INTERVIEW_PRACTICE_EMAIL;
+  const showInterviewPractice = email === INTERVIEW_PRACTICE_EMAIL;
 
   const visibleLinks = showInterviewPractice
     ? [...links, { href: "/interview-practice", label: "Interview Practice", icon: GraduationCap }]
