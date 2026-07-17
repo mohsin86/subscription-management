@@ -1,0 +1,12 @@
+model InterviewQuestion {
+  id          String   @id @default(cuid())
+  category    String
+  section     String?
+  question    String   @db.Text
+  answer      String   @db.Text
+  codeSnippet String?  @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+}
