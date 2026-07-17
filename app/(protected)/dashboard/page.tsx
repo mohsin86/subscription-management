@@ -25,8 +25,8 @@ export default async function DashboardPage() {
   >();
 
   for (const sub of subscriptions) {
-    const monthly = sub.cycle === "MONTHLY" ? sub.price : sub.price.dividedBy(12);
-    const yearly = sub.cycle === "YEARLY" ? sub.price : sub.price.times(12);
+    const monthly = sub.price.dividedBy(sub.billingCycleMonths);
+    const yearly = monthly.times(12);
 
     const existing =
       totalsByCurrency.get(sub.currency) ?? {

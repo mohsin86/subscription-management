@@ -6,7 +6,7 @@ export type Subscription = {
   category: string;
   price: string;
   currency: string;
-  cycle: "MONTHLY" | "YEARLY";
+  billingCycleMonths: number;
   renewalDate: string;
   autoRenew: boolean;
   reminderDaysBefore: number;

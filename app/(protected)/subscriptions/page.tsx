@@ -10,6 +10,7 @@ import { getSubscriptionStatus, STATUS_LABEL, STATUS_COLOR } from "@/lib/subscri
 import Link from "next/link";
 import { buildGoogleCalendarUrl } from "@/lib/calendar-link";
 import { DEMO_EMAIL } from "@/lib/demo-account";
+import { formatBillingCycle } from "@/lib/billing-cycle";
 
 
 
@@ -146,7 +147,7 @@ export default function SubscriptionsPage() {
                     <dt className="text-gray-500">Price</dt>
                     <dd>{subscription.price} {subscription.currency}</dd>
                     <dt className="text-gray-500">Cycle</dt>
-                    <dd>{subscription.cycle}</dd>
+                    <dd>{formatBillingCycle(subscription.billingCycleMonths)}</dd>
                     <dt className="text-gray-500">Renews</dt>
                     <dd>{new Date(subscription.renewalDate).toLocaleDateString()}</dd>
                     <dt className="text-gray-500">Auto-renew</dt>
@@ -228,7 +229,7 @@ export default function SubscriptionsPage() {
                       <td className="py-2">
                         {subscription.price} {subscription.currency}
                       </td>
-                      <td className="py-2">{subscription.cycle}</td>
+                      <td className="py-2">{formatBillingCycle(subscription.billingCycleMonths)}</td>
                       <td className="py-2">
                         {new Date(subscription.renewalDate).toLocaleDateString()}
                       </td>
