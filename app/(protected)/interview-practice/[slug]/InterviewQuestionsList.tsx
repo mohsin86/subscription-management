@@ -5,6 +5,7 @@ import { marked } from "marked";
 import { useInterviewQuestions } from "./hooks/useInterviewQuestions";
 import { useUpdateInterviewQuestion } from "./hooks/useUpdateInterviewQuestion";
 import { useDeleteInterviewQuestion } from "./hooks/useDeleteInterviewQuestion";
+import AnswerEditor from "./AnswerEditor";
 import type { InterviewQuestion } from "./interviewQuestions.client";
 
 /**
@@ -108,25 +109,20 @@ function QuestionCard({
     return (
       <div className="interview-question">
         <div className="flex flex-col gap-2">
-          <label>
-            Question
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Question</span>
             <input
               value={questionText}
               onChange={(e) => setQuestionText(e.target.value)}
               className="border px-2 py-1 w-full"
             />
           </label>
-          <label>
-            Answer
-            <textarea
-              value={answerText}
-              onChange={(e) => setAnswerText(e.target.value)}
-              rows={6}
-              className="border px-2 py-1 w-full font-mono text-sm"
-            />
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Answer</span>
+            <AnswerEditor content={answerText} onChange={setAnswerText} />
           </label>
-          <label>
-            Code (optional)
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Code (optional)</span>
             <textarea
               value={codeText}
               onChange={(e) => setCodeText(e.target.value)}
@@ -134,7 +130,7 @@ function QuestionCard({
               className="border px-2 py-1 w-full font-mono text-sm"
             />
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               disabled={isSaving}
@@ -155,7 +151,7 @@ function QuestionCard({
   }
 
   const questionHtml = marked.parse(`${number}. ${question.question}`) as string;
-  const answerHtml = question.answer ? (marked.parse(question.answer) as string) : "";
+  const answerHtml = question.answer ?? "";
   const codeHtml = question.codeSnippet
     ? (marked.parse("```\n" + question.codeSnippet + "\n```") as string)
     : null;
@@ -166,7 +162,7 @@ function QuestionCard({
       {answerHtml && <div dangerouslySetInnerHTML={{ __html: answerHtml }} />}
       {codeHtml && <div dangerouslySetInnerHTML={{ __html: codeHtml }} />}
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex flex-wrap gap-2 mt-2">
         <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
           Edit
         </button>
