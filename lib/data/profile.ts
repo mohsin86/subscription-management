@@ -10,9 +10,9 @@ export const profile = {
   tagline:
     "I build things that work: eCommerce platforms, business websites, and SaaS apps focused on solving the actual problem, not just checking boxes.",
   about: [
-  "I got into web development in 2012 — started as a developer, and somewhere along the way ended up leading the team building the platforms I used to build myself. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
-  "Day to day that's architecture calls, code reviews, sprint planning, and talking directly to clients — making sure what actually ships matches what they came to us for, not just what's easiest to build. A store that converts better, a checkout that doesn't lose people halfway through, a backend that holds up when traffic spikes instead of falling over. Mostly working in PHP, Node.js, Express, TypeScript, React, Next.js, NestJS, and AWS, with Jira, Asana, Trello, Slack, and Zoom keeping the team on the same page.",
-  "I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets. I use MCP servers and custom skills to fit them into real workflows instead of relying on generic prompting. I've also completed my PMP exam prep, mostly to put a formal label on the project management side I've already been doing for years.",
+  "I got into web development early on — started as a developer, and made it a point to own what I built end to end, not just hand it off once the code was written. Most of that time has been at SEBPO, working on eCommerce and business platforms for clients across the US, Australia, and a few other places.",
+  "Day to day that's understanding what a client actually needs, keeping stakeholders in the loop, and making sure what ships lines up with the business goal — not just what's easiest to build. Code reviews and sprint planning keep the team aligned along the way.",
+  "I've been using AI tools — Claude Code, Codex — as part of how I actually build, not just for quick snippets, using MCP servers and custom skills to fit them into real workflows. I'm also finishing my PMP certification, mostly to put a formal label on the project management side I've already been doing for years.",
   ],
 
 };
@@ -124,7 +124,7 @@ export const education = [
 ];
 
 export const certifications = [
-  "PMP Exam Preparation — 35 Contact Hours (Completed)",
+  "PMP Exam Preparation — 35 Contact Hours (In Progress)",
   "AWS Fundamentals",
   "MongoDB Certifications",
   "DataCamp Python Courses",
