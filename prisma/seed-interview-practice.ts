@@ -3,6 +3,7 @@ config({ path: ".env.local" });
 
 import fs from "fs";
 import path from "path";
+import { marked } from "marked";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { INTERVIEW_PRACTICE_TOPICS } from "../lib/interview-practice";
@@ -32,7 +33,7 @@ async function main() {
         category: topic.title,
         section: entry.section,
         question: entry.question,
-        answer: entry.answer,
+        answer: marked.parse(entry.answer) as string,
         codeSnippet: entry.codeSnippet,
         order: index,
       })),
