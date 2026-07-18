@@ -7,6 +7,17 @@ export type ParsedQuestion = {
   codeSnippet: string | null;
 };
 
+/**
+ * normalizeLineEndings — converts Windows CRLF (and lone CR) to plain LF.
+ * Every regex in this file anchors on `$`, which (without the `m` flag)
+ * requires the exact end of the string — but `.` never consumes `\r`, so a
+ * stray trailing `\r` on every line (from a CRLF-saved file) silently broke
+ * every single heading/question-marker match. A no-op for LF-only files.
+ */
+function normalizeLineEndings(text: string): string {
+  return text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+}
+
 const PAGE_ARTIFACT = /^\d+\/\d+$/;
 const TABLE_SEPARATOR = /^\|(\s*-+\s*\|)+$/;
 const TABLE_ROW = /^\|.*\|$/;
@@ -16,20 +27,60 @@ const PREFIXED_QUESTION_MARKER = /^\*\*(?:[A-Za-z]*\d+)[:.]\s*(.+?)\*\*$/;
 // incidental standalone bold sub-label mid-answer (e.g. "**Creating a Custom
 // Writable Stream:**") usually doesn't, so this keeps false positives low.
 const BARE_QUESTION_MARKER = /^\*\*(.+\?)\*\*$/;
+// A real Markdown ordered-list item whose text is bold, e.g. "1. **Question?**"
+// — distinct from PREFIXED_QUESTION_MARKER because the number sits *outside*
+// the bold span here, not inside it. Requires ending in "?" (same reasoning
+// as BARE_QUESTION_MARKER) and forbids a nested "**" in the captured text —
+// without that, a messy source line containing two separate bold spans
+// (e.g. "3. **Custom modules**: ... **7. How do you ...?**") would greedily
+// match across both instead of failing to match at all.
+const NUMBERED_QUESTION_MARKER = /^\d+\.\s+\*\*([^*]+\?)\*\*\s*$/;
 
 /**
- * matchQuestionMarker — recognizes any of the three question-marker styles
- * seen across source files: "**1. text**", "**JS1: text**", "**text?**".
+ * matchQuestionMarker — recognizes any of the four question-marker styles
+ * seen across source files: "**1. text**", "**JS1: text**", "**text?**",
+ * "1. **text**".
  */
 function matchQuestionMarker(line: string): string | null {
   const prefixed = line.match(PREFIXED_QUESTION_MARKER);
   if (prefixed) return prefixed[1].trim();
+  const numbered = line.match(NUMBERED_QUESTION_MARKER);
+  if (numbered) return numbered[1].trim();
   const bare = line.match(BARE_QUESTION_MARKER);
   if (bare) return bare[1].trim();
   return null;
 }
 const SECTION_HEADING = /^#\s+(.+)$/;
 const TITLE_PREFIX = /^(.*? Interview Prep)(.*)$/;
+const INTERVIEW_QNA_SUFFIX = /\s*[—-]\s*Interview Q&A\s*$/i;
+
+/**
+ * stripBoldWrapper — removes a single layer of "**...**" wrapping a whole
+ * heading (e.g. "**১. Title**" -> "১. Title"). Section/question labels get
+ * interpolated directly rather than run through `marked`, so a leftover
+ * wrapper would otherwise render as literal asterisks. A no-op for headings
+ * that were never bold-wrapped (every one of the original files).
+ */
+function stripBoldWrapper(text: string): string {
+  const match = text.match(/^\*\*(.+)\*\*$/);
+  return match ? match[1].trim() : text;
+}
+
+/**
+ * dedentLines — strips up to 4 leading spaces from every line. Some source
+ * files write answers as real Markdown ordered-list continuations (indented
+ * under "1. **Question**"), with 3 or 4 leading spaces depending on the
+ * marker's width. Left alone, that indentation risks `marked` reading a
+ * paragraph as an indented code block; stripping it (while leaving any
+ * further, relative indentation inside a real code block intact) avoids
+ * that. No-op for files that were never indented in the first place.
+ */
+function dedentLines(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => line.replace(/^ {1,4}/, ""))
+    .join("\n");
+}
 
 /**
  * decodeHtmlEntities — some source files already had inline HTML examples
@@ -200,13 +251,21 @@ function splitIntoSections(markdown: string): { section: string | null; body: st
     const headingMatch = line.match(SECTION_HEADING);
     if (headingMatch) {
       flush();
-      const heading = headingMatch[1].trim();
+      const heading = stripBoldWrapper(headingMatch[1].trim());
       if (!seenFirstHeading) {
         seenFirstHeading = true;
         const titleMatch = heading.match(TITLE_PREFIX);
-        currentSection = titleMatch && titleMatch[2].trim() ? titleMatch[2].trim() : null;
+        if (titleMatch && titleMatch[2].trim()) {
+          currentSection = titleMatch[2].trim();
+        } else {
+          // Doesn't match the "Title Interview PrepSection" merged-line
+          // pattern the original 10 files used — this heading is a real,
+          // standalone section name in its own right (e.g. "Jest — Interview
+          // Q&A"), so use it directly instead of discarding it as null.
+          currentSection = heading.replace(INTERVIEW_QNA_SUFFIX, "").trim() || null;
+        }
       } else {
-        currentSection = heading;
+        currentSection = heading.replace(INTERVIEW_QNA_SUFFIX, "").trim() || heading;
       }
       continue;
     }
@@ -235,7 +294,14 @@ function parseQuestionsFromSection(body: string): { question: string; answer: st
     if (currentQuestion !== null) {
       entries.push({
         question: currentQuestion,
-        answer: currentLines.join("\n").replace(/\n{3,}/g, "\n\n").trim(),
+        // A trailing standalone "---" is a file-level section divider that
+        // leaked into whichever question happens to sit right before it or
+        // the next `#` heading — never real answer content, so drop it.
+        answer: currentLines
+          .join("\n")
+          .replace(/\n{3,}/g, "\n\n")
+          .replace(/\n\s*-{3,}\s*$/, "")
+          .trim(),
       });
     }
     currentLines = [];
@@ -288,14 +354,37 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
  * Returns: ParsedQuestion[].
  */
 export function parseMarkdownFile(rawMarkdown: string): ParsedQuestion[] {
-  const cleaned = fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown))));
+  const cleaned = dedentLines(
+    fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(normalizeLineEndings(rawMarkdown)))))
+  );
   const sections = splitIntoSections(cleaned);
 
   const results: ParsedQuestion[] = [];
-  for (const { section, body } of sections) {
+  for (let index = 0; index < sections.length; index++) {
+    const { section, body } = sections[index];
+    // A null-section chunk at index 0, in a file that has other (real,
+    // headinged) sections after it, is leftover front matter before the
+    // first `#` heading (e.g. a title/subtitle line) — not real content.
+    // Distinct from a file with NO headings at all (like
+    // design-principles.md), which comes back as a single null-section
+    // covering the whole file and legitimately uses parseBoldLedParagraphs.
+    const isDiscardablePreamble = index === 0 && section === null && sections.length > 1;
+    if (isDiscardablePreamble) continue;
+
     let entries = parseQuestionsFromSection(body);
     if (entries.length === 0) {
       entries = parseBoldLedParagraphs(body);
+    }
+    if (entries.length === 0 && section && body.trim()) {
+      // Neither method found a recognizable Q&A marker at all — this is a
+      // notes-style section (a topic broken into ## subheadings and prose/
+      // bullets, not question/answer pairs), so treat the whole section as
+      // one card: its own heading becomes the question, everything under it
+      // becomes the answer verbatim (## headings and bullet lists still
+      // render correctly through `marked` as real markdown). No further
+      // `section` grouping applies once the heading itself is the question.
+      results.push({ section: null, question: section, answer: body.trim(), codeSnippet: null });
+      continue;
     }
     for (const entry of entries) {
       const { text, code } = extractCode(entry.answer);
