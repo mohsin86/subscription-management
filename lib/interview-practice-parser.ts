@@ -16,20 +16,48 @@ const PREFIXED_QUESTION_MARKER = /^\*\*(?:[A-Za-z]*\d+)[:.]\s*(.+?)\*\*$/;
 // incidental standalone bold sub-label mid-answer (e.g. "**Creating a Custom
 // Writable Stream:**") usually doesn't, so this keeps false positives low.
 const BARE_QUESTION_MARKER = /^\*\*(.+\?)\*\*$/;
+// A real Markdown ordered-list item whose text is bold, e.g. "1. **Question?**"
+// — distinct from PREFIXED_QUESTION_MARKER because the number sits *outside*
+// the bold span here, not inside it. Requires ending in "?" (same reasoning
+// as BARE_QUESTION_MARKER) and forbids a nested "**" in the captured text —
+// without that, a messy source line containing two separate bold spans
+// (e.g. "3. **Custom modules**: ... **7. How do you ...?**") would greedily
+// match across both instead of failing to match at all.
+const NUMBERED_QUESTION_MARKER = /^\d+\.\s+\*\*([^*]+\?)\*\*\s*$/;
 
 /**
- * matchQuestionMarker — recognizes any of the three question-marker styles
- * seen across source files: "**1. text**", "**JS1: text**", "**text?**".
+ * matchQuestionMarker — recognizes any of the four question-marker styles
+ * seen across source files: "**1. text**", "**JS1: text**", "**text?**",
+ * "1. **text**".
  */
 function matchQuestionMarker(line: string): string | null {
   const prefixed = line.match(PREFIXED_QUESTION_MARKER);
   if (prefixed) return prefixed[1].trim();
+  const numbered = line.match(NUMBERED_QUESTION_MARKER);
+  if (numbered) return numbered[1].trim();
   const bare = line.match(BARE_QUESTION_MARKER);
   if (bare) return bare[1].trim();
   return null;
 }
 const SECTION_HEADING = /^#\s+(.+)$/;
 const TITLE_PREFIX = /^(.*? Interview Prep)(.*)$/;
+const INTERVIEW_QNA_SUFFIX = /\s*[—-]\s*Interview Q&A\s*$/i;
+
+/**
+ * dedentLines — strips up to 4 leading spaces from every line. Some source
+ * files write answers as real Markdown ordered-list continuations (indented
+ * under "1. **Question**"), with 3 or 4 leading spaces depending on the
+ * marker's width. Left alone, that indentation risks `marked` reading a
+ * paragraph as an indented code block; stripping it (while leaving any
+ * further, relative indentation inside a real code block intact) avoids
+ * that. No-op for files that were never indented in the first place.
+ */
+function dedentLines(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => line.replace(/^ {1,4}/, ""))
+    .join("\n");
+}
 
 /**
  * decodeHtmlEntities — some source files already had inline HTML examples
@@ -204,9 +232,17 @@ function splitIntoSections(markdown: string): { section: string | null; body: st
       if (!seenFirstHeading) {
         seenFirstHeading = true;
         const titleMatch = heading.match(TITLE_PREFIX);
-        currentSection = titleMatch && titleMatch[2].trim() ? titleMatch[2].trim() : null;
+        if (titleMatch && titleMatch[2].trim()) {
+          currentSection = titleMatch[2].trim();
+        } else {
+          // Doesn't match the "Title Interview PrepSection" merged-line
+          // pattern the original 10 files used — this heading is a real,
+          // standalone section name in its own right (e.g. "Jest — Interview
+          // Q&A"), so use it directly instead of discarding it as null.
+          currentSection = heading.replace(INTERVIEW_QNA_SUFFIX, "").trim() || null;
+        }
       } else {
-        currentSection = heading;
+        currentSection = heading.replace(INTERVIEW_QNA_SUFFIX, "").trim() || heading;
       }
       continue;
     }
@@ -288,7 +324,7 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
  * Returns: ParsedQuestion[].
  */
 export function parseMarkdownFile(rawMarkdown: string): ParsedQuestion[] {
-  const cleaned = fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown))));
+  const cleaned = dedentLines(fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown)))));
   const sections = splitIntoSections(cleaned);
 
   const results: ParsedQuestion[] = [];
