@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
@@ -9,7 +11,12 @@ export const metadata: Metadata = {
  * LoginPage — login route wrapping LoginForm.
  * Args: none. Returns: page JSX.
  */
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth();
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
     <section className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-16">
       <h1 className="text-2xl font-bold">Subscription Tracker Login</h1>
