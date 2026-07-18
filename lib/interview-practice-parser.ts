@@ -29,6 +29,18 @@ function matchQuestionMarker(line: string): string | null {
   return null;
 }
 const SECTION_HEADING = /^#\s+(.+)$/;
+const SUBSECTION_HEADING = /^##\s+(.+)$/;
+
+/**
+ * stripBoldWrapper — removes a single layer of ** ** wrapping a heading's
+ * full text (e.g. "**১. Title**" -> "১. Title"). Section/question labels are
+ * interpolated directly into JSX rather than run through `marked`, so a
+ * leftover wrapper would render as literal asterisks.
+ */
+function stripBoldWrapper(text: string): string {
+  const match = text.match(/^\*\*(.+)\*\*$/);
+  return match ? match[1].trim() : text;
+}
 const TITLE_PREFIX = /^(.*? Interview Prep)(.*)$/;
 
 /**
@@ -199,14 +211,21 @@ function splitIntoSections(markdown: string): { section: string | null; body: st
   for (const line of lines) {
     const headingMatch = line.match(SECTION_HEADING);
     if (headingMatch) {
-      flush();
+      if (seenFirstHeading) {
+        flush();
+      } else {
+        // Discard any front-matter (e.g. a document title/subtitle) before
+        // the first heading — every existing content file's first line is
+        // already its first heading, so this is a no-op for all of them.
+        currentLines = [];
+      }
       const heading = headingMatch[1].trim();
       if (!seenFirstHeading) {
         seenFirstHeading = true;
         const titleMatch = heading.match(TITLE_PREFIX);
-        currentSection = titleMatch && titleMatch[2].trim() ? titleMatch[2].trim() : null;
+        currentSection = titleMatch && titleMatch[2].trim() ? stripBoldWrapper(titleMatch[2].trim()) : null;
       } else {
-        currentSection = heading;
+        currentSection = stripBoldWrapper(heading);
       }
       continue;
     }
@@ -281,6 +300,47 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
 }
 
 /**
+ * parseH2LedSubsections — fallback parser for notes-style files that have no
+ * numbered question markers but do use `## ` sub-headings (currently just
+ * ai-fundamentals.md): each sub-heading becomes a question, and everything
+ * under it (bullets, paragraphs) becomes the answer, up to the next `## ` or
+ * the end of the section. Content before the first `## ` in a section (e.g.
+ * an intro paragraph) is discarded, same as parseBoldLedParagraphs already
+ * does for unmatched leading text.
+ */
+function parseH2LedSubsections(body: string): { question: string; answer: string }[] {
+  const lines = body.split("\n");
+  const entries: { question: string; answer: string }[] = [];
+  let currentQuestion: string | null = null;
+  let currentLines: string[] = [];
+
+  function flush() {
+    if (currentQuestion !== null) {
+      entries.push({
+        question: currentQuestion,
+        answer: currentLines.join("\n").replace(/\n{3,}/g, "\n\n").trim(),
+      });
+    }
+    currentLines = [];
+  }
+
+  for (const line of lines) {
+    const heading = line.trim().match(SUBSECTION_HEADING);
+    if (heading) {
+      flush();
+      currentQuestion = stripBoldWrapper(heading[1].trim());
+      continue;
+    }
+    if (currentQuestion !== null) {
+      currentLines.push(line);
+    }
+  }
+  flush();
+
+  return entries;
+}
+
+/**
  * parseMarkdownFile — full pipeline: clean up known source artifacts, split
  * into sections, split each section into Q&A entries, then pull code lines
  * out of each answer into their own field.
@@ -288,14 +348,16 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
  * Returns: ParsedQuestion[].
  */
 export function parseMarkdownFile(rawMarkdown: string): ParsedQuestion[] {
-  const cleaned = fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown))));
+  const normalized = rawMarkdown.replace(/\r\n/g, "\n");
+  const cleaned = fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(normalized))));
   const sections = splitIntoSections(cleaned);
 
   const results: ParsedQuestion[] = [];
   for (const { section, body } of sections) {
     let entries = parseQuestionsFromSection(body);
     if (entries.length === 0) {
-      entries = parseBoldLedParagraphs(body);
+      const hasSubsections = body.split("\n").some((line) => SUBSECTION_HEADING.test(line.trim()));
+      entries = hasSubsections ? parseH2LedSubsections(body) : parseBoldLedParagraphs(body);
     }
     for (const entry of entries) {
       const { text, code } = extractCode(entry.answer);
