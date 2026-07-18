@@ -7,6 +7,17 @@ export type ParsedQuestion = {
   codeSnippet: string | null;
 };
 
+/**
+ * normalizeLineEndings — converts Windows CRLF (and lone CR) to plain LF.
+ * Every regex in this file anchors on `$`, which (without the `m` flag)
+ * requires the exact end of the string — but `.` never consumes `\r`, so a
+ * stray trailing `\r` on every line (from a CRLF-saved file) silently broke
+ * every single heading/question-marker match. A no-op for LF-only files.
+ */
+function normalizeLineEndings(text: string): string {
+  return text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+}
+
 const PAGE_ARTIFACT = /^\d+\/\d+$/;
 const TABLE_SEPARATOR = /^\|(\s*-+\s*\|)+$/;
 const TABLE_ROW = /^\|.*\|$/;
@@ -42,6 +53,18 @@ function matchQuestionMarker(line: string): string | null {
 const SECTION_HEADING = /^#\s+(.+)$/;
 const TITLE_PREFIX = /^(.*? Interview Prep)(.*)$/;
 const INTERVIEW_QNA_SUFFIX = /\s*[—-]\s*Interview Q&A\s*$/i;
+
+/**
+ * stripBoldWrapper — removes a single layer of "**...**" wrapping a whole
+ * heading (e.g. "**১. Title**" -> "১. Title"). Section/question labels get
+ * interpolated directly rather than run through `marked`, so a leftover
+ * wrapper would otherwise render as literal asterisks. A no-op for headings
+ * that were never bold-wrapped (every one of the original files).
+ */
+function stripBoldWrapper(text: string): string {
+  const match = text.match(/^\*\*(.+)\*\*$/);
+  return match ? match[1].trim() : text;
+}
 
 /**
  * dedentLines — strips up to 4 leading spaces from every line. Some source
@@ -228,7 +251,7 @@ function splitIntoSections(markdown: string): { section: string | null; body: st
     const headingMatch = line.match(SECTION_HEADING);
     if (headingMatch) {
       flush();
-      const heading = headingMatch[1].trim();
+      const heading = stripBoldWrapper(headingMatch[1].trim());
       if (!seenFirstHeading) {
         seenFirstHeading = true;
         const titleMatch = heading.match(TITLE_PREFIX);
@@ -331,14 +354,37 @@ function parseBoldLedParagraphs(body: string): { question: string; answer: strin
  * Returns: ParsedQuestion[].
  */
 export function parseMarkdownFile(rawMarkdown: string): ParsedQuestion[] {
-  const cleaned = dedentLines(fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(rawMarkdown)))));
+  const cleaned = dedentLines(
+    fixBrokenTables(stripPageArtifacts(decodeHtmlEntities(unescapeMarkdown(normalizeLineEndings(rawMarkdown)))))
+  );
   const sections = splitIntoSections(cleaned);
 
   const results: ParsedQuestion[] = [];
-  for (const { section, body } of sections) {
+  for (let index = 0; index < sections.length; index++) {
+    const { section, body } = sections[index];
+    // A null-section chunk at index 0, in a file that has other (real,
+    // headinged) sections after it, is leftover front matter before the
+    // first `#` heading (e.g. a title/subtitle line) — not real content.
+    // Distinct from a file with NO headings at all (like
+    // design-principles.md), which comes back as a single null-section
+    // covering the whole file and legitimately uses parseBoldLedParagraphs.
+    const isDiscardablePreamble = index === 0 && section === null && sections.length > 1;
+    if (isDiscardablePreamble) continue;
+
     let entries = parseQuestionsFromSection(body);
     if (entries.length === 0) {
       entries = parseBoldLedParagraphs(body);
+    }
+    if (entries.length === 0 && section && body.trim()) {
+      // Neither method found a recognizable Q&A marker at all — this is a
+      // notes-style section (a topic broken into ## subheadings and prose/
+      // bullets, not question/answer pairs), so treat the whole section as
+      // one card: its own heading becomes the question, everything under it
+      // becomes the answer verbatim (## headings and bullet lists still
+      // render correctly through `marked` as real markdown). No further
+      // `section` grouping applies once the heading itself is the question.
+      results.push({ section: null, question: section, answer: body.trim(), codeSnippet: null });
+      continue;
     }
     for (const entry of entries) {
       const { text, code } = extractCode(entry.answer);
