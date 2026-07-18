@@ -33,4 +33,5 @@ export const INTERVIEW_PRACTICE_TOPICS: { slug: string; title: string }[] = [
   { slug: "typescript", title: "TypeScript" },
   { slug: "database-sql", title: "Database / SQL" },
   { slug: "system-design", title: "System Design" },
+  { slug: "testing", title: "Jest, Vitest & React Testing Library" },
 ];
