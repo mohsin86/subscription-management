@@ -182,6 +182,28 @@
     await userEvent.type(screen.getByLabelText('Name'), 'Mohasin');
     ```
 
+16. **What are the common getBy... queries in React Testing Library, and how are they used?**
+
+    They find elements in the DOM during a test the way a user would interact with the UI:
+
+    - `getByText`: finds an element by its visible text
+    - `getByLabelText`: finds a form input by its label
+    - `getByPlaceholderText`: finds an input by its placeholder text
+    - `getByRole`: finds an element by its accessibility role — button, heading, textbox, status, etc.
+    - `getByAltText`: finds an image by its alt text
+    - `getByTitle`: finds an element by its title attribute
+    - `getByDisplayValue`: finds an input by its current displayed value
+    - `getByTestId`: finds an element by a `data-testid`
+
+    ```js
+    screen.getByText("Login");
+    screen.getByLabelText(/email/i);
+    screen.getByRole("button");
+    screen.getByPlaceholderText("Enter name");
+    ```
+
+    Related variants: `getAllBy...` for multiple matches, `queryBy...` for optional elements that may not exist, `findBy...` for elements that appear asynchronously.
+
 ---
 
 # Vitest — Interview Q&A

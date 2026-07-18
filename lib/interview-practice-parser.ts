@@ -271,7 +271,14 @@ function parseQuestionsFromSection(body: string): { question: string; answer: st
     if (currentQuestion !== null) {
       entries.push({
         question: currentQuestion,
-        answer: currentLines.join("\n").replace(/\n{3,}/g, "\n\n").trim(),
+        // A trailing standalone "---" is a file-level section divider that
+        // leaked into whichever question happens to sit right before it or
+        // the next `#` heading — never real answer content, so drop it.
+        answer: currentLines
+          .join("\n")
+          .replace(/\n{3,}/g, "\n\n")
+          .replace(/\n\s*-{3,}\s*$/, "")
+          .trim(),
       });
     }
     currentLines = [];
