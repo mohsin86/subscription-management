@@ -1,7 +1,7 @@
 export const profile = {
   name: "Mohammed Mohasin",
   photo: "/images/mohammed-mohasin.jpg",
-  title: "Full-Stack Developer — Node.js · TypeScript · Next.js · React · NestJS · PHP · WordPress",
+  title: "Full-Stack Developer — Node.js · Next.js · React · TypeScript · NestJS · PHP · Laravel · WordPress",
   location: "Chattogram, Bangladesh",
   email: "devctg01@gmail.com",
   phone: "+8801815623468",
@@ -21,14 +21,14 @@ export const skills: { category: string; items: string[] }[] = [
   {
     category: "Tech Stack",
     items: [
-      "PHP",
-      "Laravel",
       "Node.js",
       "Express.js",
       "TypeScript",
       "React",
       "Next.js",
       "NestJS",
+      "PHP",
+      "Laravel",
       "WordPress",
       "WooCommerce",
       "MySQL",
