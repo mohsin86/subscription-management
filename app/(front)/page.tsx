@@ -14,14 +14,14 @@ export default function HomePage() {
   return (
     <section className="mx-auto max-w-3xl px-6 py-16">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{profile.name}</h1>
           <p className="text-zinc-500">{profile.title}</p>
         </div>
         <a
           href={cvDownloadUrl}
           download
-          className="border border-zinc-900 bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="shrink-0 border border-zinc-900 bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
         >
           Download CV
         </a>
