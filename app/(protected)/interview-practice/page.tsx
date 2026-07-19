@@ -15,11 +15,11 @@ export default async function InterviewPracticePage() {
   }
 
   return (
-    <section className="max-w-md">
+    <section>
       <h1 className="text-2xl font-bold">Interview Practice</h1>
       <p className="mt-1 text-gray-500 text-sm">Pick a topic to review.</p>
 
-      <ul className="mt-6 flex flex-col gap-2">
+      <ul className="mt-6 flex flex-wrap gap-2">
         {INTERVIEW_PRACTICE_TOPICS.map((topic) => (
           <li key={topic.slug}>
             <Link
