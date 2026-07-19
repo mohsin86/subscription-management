@@ -35,4 +35,5 @@ export const INTERVIEW_PRACTICE_TOPICS: { slug: string; title: string }[] = [
   { slug: "system-design", title: "System Design" },
   { slug: "testing", title: "Jest, Vitest & React Testing Library" },
   { slug: "ai-fundamentals", title: "AI Fundamentals" },
+  { slug: "restful-api", title: "RESTful API" },
 ];
