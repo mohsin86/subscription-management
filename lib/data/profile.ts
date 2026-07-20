@@ -174,6 +174,14 @@ export const personalProjects: {
     liveUrl: "https://www.almusaidahfoundation.com/",
   },
   {
+    name: "Stakeholder Repository",
+    description:
+      "A business-agnostic stakeholder information repository — customers, vendors, investors, and other contacts organized under user-defined categories, plus a linked task manager with email reminders and real Google Calendar sync via stored OAuth refresh tokens. Includes username-or-email + Google authentication, a computed stakeholder Priority Score based on the classic Power-Interest Grid, and a searchable typeahead picker for linking tasks to stakeholders.",
+    tech: ["Laravel", "PHP", "MySQL", "Google OAuth & Calendar API", "Tailwind CSS", "Pest"],
+    liveUrl: "https://stakeholder-repository.onrender.com/",
+    githubUrl: "https://github.com/mohsin86/stakeholder-repository",
+  },
+  {
     name: "Star Plus Home Care",
     description:
       "Site for a home health care provider offering non-medical personal and home care services to seniors and individuals in need of care, including transitional care from assisted living, hospitals, and similar settings — helping clients stay safely and comfortably in their own homes.",
