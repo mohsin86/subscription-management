@@ -132,6 +132,7 @@
 /* Rendered markdown for the Interview Practice pages (content/interview-practice/*.md via `marked`). */
 .interview-content {
   line-height: 1.7;
+  overflow-wrap: break-word;
 }
 .interview-content h1 {
   font-size: 1.5rem;

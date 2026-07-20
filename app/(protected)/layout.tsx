@@ -18,7 +18,7 @@ export default async function ProtectedLayout({
       <Topbar name={session?.user?.name} email={session?.user?.email} />
       <div className="flex flex-1">
         <Sidebar email={session?.user?.email} />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="min-w-0 flex-1 p-6">{children}</main>
       </div>
     </div>
   );
