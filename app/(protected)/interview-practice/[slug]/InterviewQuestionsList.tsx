@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { marked } from "marked";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useInterviewQuestions } from "./hooks/useInterviewQuestions";
 import { useUpdateInterviewQuestion } from "./hooks/useUpdateInterviewQuestion";
 import { useDeleteInterviewQuestion } from "./hooks/useDeleteInterviewQuestion";
@@ -20,6 +21,19 @@ export default function InterviewQuestionsList({ categoryTitle }: { categoryTitl
   const { mutate: updateQuestion, isPending: isSaving } = useUpdateInterviewQuestion(categoryTitle);
   const { mutate: deleteQuestion, isPending: isDeleting } = useDeleteInterviewQuestion(categoryTitle);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  function toggleExpanded(id: string) {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
 
   if (isPending) return <p className="text-gray-500 mt-4">Loading...</p>;
   if (isError) return <p className="text-red-500 mt-4">{(error as Error).message}</p>;
@@ -60,6 +74,8 @@ export default function InterviewQuestionsList({ categoryTitle }: { categoryTitl
                 isEditing={editingId === q.id}
                 isSaving={isSaving}
                 isDeleting={isDeleting}
+                isExpanded={expandedIds.has(q.id)}
+                onToggleExpand={() => toggleExpanded(q.id)}
                 onEdit={() => setEditingId(q.id)}
                 onCancel={() => setEditingId(null)}
                 onSave={(data) =>
@@ -86,6 +102,8 @@ function QuestionCard({
   isEditing,
   isSaving,
   isDeleting,
+  isExpanded,
+  onToggleExpand,
   onEdit,
   onCancel,
   onSave,
@@ -96,6 +114,8 @@ function QuestionCard({
   isEditing: boolean;
   isSaving: boolean;
   isDeleting: boolean;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onSave: (data: { question: string; answer: string; codeSnippet?: string }) => void;
@@ -150,7 +170,7 @@ function QuestionCard({
     );
   }
 
-  const questionHtml = marked.parse(`${number}. ${question.question}`) as string;
+  const questionHtml = marked.parseInline(`${number}. ${question.question}`) as string;
   const answerHtml = question.answer ?? "";
   const codeHtml = question.codeSnippet
     ? (marked.parse("```\n" + question.codeSnippet + "\n```") as string)
@@ -158,23 +178,45 @@ function QuestionCard({
 
   return (
     <div className="interview-question">
-      <h3 dangerouslySetInnerHTML={{ __html: questionHtml }} />
-      {answerHtml && <div dangerouslySetInnerHTML={{ __html: answerHtml }} />}
-      {codeHtml && <div dangerouslySetInnerHTML={{ __html: codeHtml }} />}
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="flex-1">
+          <button
+            type="button"
+            aria-expanded={isExpanded}
+            aria-controls={`answer-${question.id}`}
+            onClick={onToggleExpand}
+            className="flex w-full items-center gap-2 text-left"
+          >
+            {isExpanded ? (
+              <ChevronDown className="h-4 w-4 shrink-0" />
+            ) : (
+              <ChevronRight className="h-4 w-4 shrink-0" />
+            )}
+            <span dangerouslySetInnerHTML={{ __html: questionHtml }} />
+          </button>
+        </h3>
 
-      <div className="flex flex-wrap gap-2 mt-2">
-        <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
-          Edit
-        </button>
-        <button
-          type="button"
-          disabled={isDeleting}
-          onClick={onDelete}
-          className="border px-2 py-1 text-sm disabled:opacity-40"
-        >
-          Delete
-        </button>
+        <div className="flex flex-wrap gap-2 shrink-0">
+          <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
+            Edit
+          </button>
+          <button
+            type="button"
+            disabled={isDeleting}
+            onClick={onDelete}
+            className="border px-2 py-1 text-sm disabled:opacity-40"
+          >
+            Delete
+          </button>
+        </div>
       </div>
+
+      {isExpanded && (
+        <div id={`answer-${question.id}`} className="mt-2">
+          {answerHtml && <div dangerouslySetInnerHTML={{ __html: answerHtml }} />}
+          {codeHtml && <div dangerouslySetInnerHTML={{ __html: codeHtml }} />}
+        </div>
+      )}
     </div>
   );
 }
