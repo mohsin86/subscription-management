@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { LoginSchema, type LoginFormData } from "@/lib/validation/auth";
-import { loginAction, googleLoginAction } from "./actions";
+import { loginAction, googleLoginAction, resendVerificationAction } from "./actions";
 
 const DEMO_EMAIL = "demo@subscription-tracker.dev";
 const DEMO_PASSWORD = "Demo@1234";
@@ -15,9 +15,12 @@ const DEMO_PASSWORD = "Demo@1234";
  */
 export default function LoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const {
     register,
     handleSubmit,
+    getValues,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) });
@@ -29,11 +32,21 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     setServerError(null);
+    setNeedsVerification(false);
+    setResendState("idle");
     const result = await loginAction(data);
     if (result?.error) {
       setServerError(result.error);
+      setNeedsVerification(!!result.needsVerification);
     }
   };
+
+  async function handleResend() {
+    setResendState("sending");
+    const email = getValues("email");
+    const result = await resendVerificationAction(email);
+    setResendState("error" in result ? "error" : "sent");
+  }
 
   return (
     <div className="flex flex-col gap-6 max-w-sm">
@@ -66,6 +79,22 @@ export default function LoginForm() {
           {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
         {serverError && <p className="text-red-500 text-sm">{serverError}</p>}
+        {needsVerification && resendState !== "sent" && (
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendState === "sending"}
+            className="text-sm underline text-left w-fit"
+          >
+            {resendState === "sending" ? "Resending..." : "Resend confirmation email"}
+          </button>
+        )}
+        {resendState === "sent" && (
+          <p className="text-sm text-green-600">Confirmation email resent — check your inbox.</p>
+        )}
+        {resendState === "error" && (
+          <p className="text-sm text-red-500">Failed to resend. Try again shortly.</p>
+        )}
       </form>
 
       <div className="flex gap-3">
