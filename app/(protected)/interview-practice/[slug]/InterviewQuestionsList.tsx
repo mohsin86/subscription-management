@@ -192,12 +192,12 @@ function QuestionCard({
             aria-expanded={isExpanded}
             aria-controls={`answer-${question.id}`}
             onClick={onToggleExpand}
-            className="flex w-full items-center gap-2 text-left"
+            className="flex w-full items-start gap-2 text-left"
           >
             {isExpanded ? (
-              <ChevronDown className="h-4 w-4 shrink-0" />
+              <ChevronDown className="h-4 w-4 shrink-0 mt-1" />
             ) : (
-              <ChevronRight className="h-4 w-4 shrink-0" />
+              <ChevronRight className="h-4 w-4 shrink-0 mt-1" />
             )}
             <span dangerouslySetInnerHTML={{ __html: questionHtml }} />
           </button>
