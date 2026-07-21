@@ -24,7 +24,7 @@ export default function Sidebar({ email }: { email?: string | null }) {
   const showInterviewPractice = email === INTERVIEW_PRACTICE_EMAIL;
 
   const visibleLinks = showInterviewPractice
-    ? [...links, { href: "/interview-practice", label: "Interview Practice", icon: GraduationCap }]
+    ? [...links, { href: "/practice", label: "Interview Practice", icon: GraduationCap }]
     : links;
 
   return (

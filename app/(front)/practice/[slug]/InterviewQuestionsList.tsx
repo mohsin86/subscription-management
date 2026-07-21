@@ -3,20 +3,27 @@
 import { useState } from "react";
 import { marked } from "marked";
 import { ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
-import { useInterviewQuestions } from "./hooks/useInterviewQuestions";
-import { useUpdateInterviewQuestion } from "./hooks/useUpdateInterviewQuestion";
-import { useDeleteInterviewQuestion } from "./hooks/useDeleteInterviewQuestion";
-import AnswerEditor from "./AnswerEditor";
-import type { InterviewQuestion } from "./interviewQuestions.client";
+import { useInterviewQuestions } from "../hooks/useInterviewQuestions";
+import { useUpdateInterviewQuestion } from "../hooks/useUpdateInterviewQuestion";
+import { useDeleteInterviewQuestion } from "../hooks/useDeleteInterviewQuestion";
+import AnswerEditor from "../AnswerEditor";
+import type { InterviewQuestion } from "../interviewQuestions.client";
 
 /**
  * InterviewQuestionsList — fetches and renders a category's questions, grouped
- * by section, each numbered by its position in the overall list. Supports
- * editing (raw markdown) and deleting a question in place.
+ * by section, each numbered by its position in the overall list. Editing
+ * (raw markdown) and deleting are only available when isOwner is true.
  * Args: categoryTitle (string) — the category to fetch/display.
- * Returns: grouped, numbered, editable question list JSX.
+ * Args: isOwner (boolean) — whether to show Edit/Delete controls.
+ * Returns: grouped, numbered question list JSX.
  */
-export default function InterviewQuestionsList({ categoryTitle }: { categoryTitle: string }) {
+export default function InterviewQuestionsList({
+  categoryTitle,
+  isOwner,
+}: {
+  categoryTitle: string;
+  isOwner: boolean;
+}) {
   const { data: questions, isPending, isError, error } = useInterviewQuestions(categoryTitle);
   const { mutate: updateQuestion, isPending: isSaving } = useUpdateInterviewQuestion(categoryTitle);
   const { mutate: deleteQuestion, isPending: isDeleting } = useDeleteInterviewQuestion(categoryTitle);
@@ -71,6 +78,7 @@ export default function InterviewQuestionsList({ categoryTitle }: { categoryTitl
                 key={q.id}
                 number={runningNumber}
                 question={q}
+                isOwner={isOwner}
                 isEditing={editingId === q.id}
                 isSaving={isSaving}
                 isDeleting={isDeleting}
@@ -93,12 +101,14 @@ export default function InterviewQuestionsList({ categoryTitle }: { categoryTitl
 
 /**
  * QuestionCard — one question, either rendered as HTML or as an edit form.
- * Args: number (running index), question, isEditing/isSaving/isDeleting flags, and edit/save/cancel/delete callbacks.
+ * Args: number (running index), question, isOwner (shows Edit/Delete when true),
+ * isEditing/isSaving/isDeleting flags, and edit/save/cancel/delete callbacks.
  * Returns: card JSX.
  */
 function QuestionCard({
   number,
   question,
+  isOwner,
   isEditing,
   isSaving,
   isDeleting,
@@ -111,6 +121,7 @@ function QuestionCard({
 }: {
   number: number;
   question: InterviewQuestion;
+  isOwner: boolean;
   isEditing: boolean;
   isSaving: boolean;
   isDeleting: boolean;
@@ -213,17 +224,21 @@ function QuestionCard({
           >
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           </button>
-          <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
-            Edit
-          </button>
-          <button
-            type="button"
-            disabled={isDeleting}
-            onClick={onDelete}
-            className="border px-2 py-1 text-sm disabled:opacity-40"
-          >
-            Delete
-          </button>
+          {isOwner && (
+            <>
+              <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
+                Edit
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={onDelete}
+                className="border px-2 py-1 text-sm disabled:opacity-40"
+              >
+                Delete
+              </button>
+            </>
+          )}
         </div>
       </div>
 

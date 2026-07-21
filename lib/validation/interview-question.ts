@@ -11,3 +11,13 @@ export const InterviewQuestionEditSchema = z.object({
 });
 
 export type InterviewQuestionEditData = z.infer<typeof InterviewQuestionEditSchema>;
+
+/**
+ * InterviewQuestionCreateSchema — validates creating a new interview question.
+ * Args: n/a (Zod schema). Returns: n/a — used via .safeParse() and z.infer.
+ */
+export const InterviewQuestionCreateSchema = InterviewQuestionEditSchema.extend({
+  category: z.string().min(1, "Category is required"),
+});
+
+export type InterviewQuestionCreateData = z.infer<typeof InterviewQuestionCreateSchema>;
