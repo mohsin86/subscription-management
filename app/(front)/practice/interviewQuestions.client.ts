@@ -14,6 +14,10 @@ export type InterviewQuestionEditData = {
   codeSnippet?: string;
 };
 
+export type InterviewQuestionCreateData = InterviewQuestionEditData & {
+  category: string;
+};
+
 async function handleResponse<T>(res: Response): Promise<T> {
   const json = await res.json();
   if (!res.ok) {
@@ -29,6 +33,19 @@ async function handleResponse<T>(res: Response): Promise<T> {
 export async function fetchInterviewQuestions(category: string) {
   const res = await fetch(`/api/interview-questions?category=${encodeURIComponent(category)}`);
   return handleResponse<InterviewQuestion[]>(res);
+}
+
+/**
+ * createInterviewQuestion — adds a new question to a category.
+ * Args: data (InterviewQuestionCreateData). Returns: Promise<InterviewQuestion>
+ */
+export async function createInterviewQuestion(data: InterviewQuestionCreateData) {
+  const res = await fetch(`/api/interview-questions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return handleResponse<InterviewQuestion>(res);
 }
 
 /**
