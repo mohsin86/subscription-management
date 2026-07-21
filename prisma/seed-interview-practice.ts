@@ -18,10 +18,20 @@ const prisma = new PrismaClient({ adapter });
  * each topic's rows before re-inserting so edits to the source files stay
  * in sync.
  */
+
 async function main() {
+  const onlySlug = process.argv[2];
+  const topics = onlySlug
+    ? INTERVIEW_PRACTICE_TOPICS.filter((topic) => topic.slug === onlySlug)
+    : INTERVIEW_PRACTICE_TOPICS;
+
+  if (onlySlug && topics.length === 0) {
+    throw new Error(`No topic with slug "${onlySlug}" in INTERVIEW_PRACTICE_TOPICS`);
+  }
+
   let total = 0;
 
-  for (const topic of INTERVIEW_PRACTICE_TOPICS) {
+  for (const topic of topics) {
     const filePath = path.join("content", "interview-practice", `${topic.slug}.md`);
     const raw = fs.readFileSync(filePath, "utf-8");
     const parsed = parseMarkdownFile(raw);
@@ -43,7 +53,7 @@ async function main() {
     total += parsed.length;
   }
 
-  console.log(`Done. ${total} questions seeded across ${INTERVIEW_PRACTICE_TOPICS.length} topics.`);
+  console.log(`Done. ${total} questions seeded across ${topics.length} topic(s).`);
 }
 
 main()
