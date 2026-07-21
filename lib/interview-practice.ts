@@ -37,4 +37,5 @@ export const INTERVIEW_PRACTICE_TOPICS: { slug: string; title: string }[] = [
   { slug: "ai-fundamentals", title: "AI Fundamentals" },
   { slug: "restful-api", title: "RESTful API" },
   { slug: "laravel", title: "Laravel" },
+  { slug: "project-communication-and-behavior", title: "Project Communication & Behavior" },
 ];

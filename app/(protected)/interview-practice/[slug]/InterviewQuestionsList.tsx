@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { marked } from "marked";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
 import { useInterviewQuestions } from "./hooks/useInterviewQuestions";
 import { useUpdateInterviewQuestion } from "./hooks/useUpdateInterviewQuestion";
 import { useDeleteInterviewQuestion } from "./hooks/useDeleteInterviewQuestion";
@@ -124,6 +124,13 @@ function QuestionCard({
   const [questionText, setQuestionText] = useState(question.question);
   const [answerText, setAnswerText] = useState(question.answer);
   const [codeText, setCodeText] = useState(question.codeSnippet ?? "");
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(question.question);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   if (isEditing) {
     return (
@@ -197,6 +204,15 @@ function QuestionCard({
         </h3>
 
         <div className="flex flex-wrap gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={handleCopy}
+            aria-label="Copy question text"
+            title="Copy question text"
+            className="border px-2 py-1 text-sm"
+          >
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          </button>
           <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
             Edit
           </button>
