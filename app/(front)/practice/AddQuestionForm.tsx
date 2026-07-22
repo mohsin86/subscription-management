@@ -4,6 +4,7 @@ import { useState } from "react";
 import { INTERVIEW_PRACTICE_TOPICS } from "@/lib/interview-practice";
 import { useCreateInterviewQuestion } from "./hooks/useCreateInterviewQuestion";
 import AnswerEditor from "./AnswerEditor";
+import { handleTabIndent } from "./handleTabIndent";
 
 /**
  * AddQuestionForm — owner-only form for adding a new interview question to
@@ -74,6 +75,7 @@ export default function AddQuestionForm() {
           <textarea
             value={codeSnippet}
             onChange={(e) => setCodeSnippet(e.target.value)}
+            onKeyDown={(e) => handleTabIndent(e, setCodeSnippet)}
             rows={4}
             className="border px-2 py-1 w-full font-mono text-sm"
           />
