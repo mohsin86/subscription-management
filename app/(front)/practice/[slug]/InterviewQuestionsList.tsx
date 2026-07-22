@@ -7,6 +7,7 @@ import { useInterviewQuestions } from "../hooks/useInterviewQuestions";
 import { useUpdateInterviewQuestion } from "../hooks/useUpdateInterviewQuestion";
 import { useDeleteInterviewQuestion } from "../hooks/useDeleteInterviewQuestion";
 import AnswerEditor from "../AnswerEditor";
+import { handleTabIndent } from "../handleTabIndent";
 import type { InterviewQuestion } from "../interviewQuestions.client";
 
 /**
@@ -164,6 +165,7 @@ function QuestionCard({
             <textarea
               value={codeText}
               onChange={(e) => setCodeText(e.target.value)}
+              onKeyDown={(e) => handleTabIndent(e, setCodeText)}
               rows={4}
               className="border px-2 py-1 w-full font-mono text-sm"
             />
