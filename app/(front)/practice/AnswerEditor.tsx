@@ -38,8 +38,10 @@ export default function AnswerEditor({
   if (!editor) return null;
 
   return (
-    <div className="flex flex-col gap-2">
-      <Toolbar editor={editor} />
+    <div className="answer-editor-shell">
+      <div className="answer-editor-toolbar">
+        <Toolbar editor={editor} />
+      </div>
       <EditorContent editor={editor} />
     </div>
   );
