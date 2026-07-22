@@ -1,10 +1,44 @@
 "use client";
 
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
+import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { TableKit } from "@tiptap/extension-table";
 import { Bold, Italic, List, ListOrdered, Code, Link2, Table2, Rows3, Columns3 } from "lucide-react";
+
+const INDENT = "  ";
+
+/**
+ * TabIndent — fallback Tab/Shift-Tab handling for plain paragraph text.
+ * StarterKit's list extension already binds Tab/Shift-Tab to sink/lift a
+ * list item, and the table extension binds them to cell navigation; those
+ * run first and return false when not applicable (cursor not in a list or
+ * table), which is when this extension's turn comes up. Uses non-breaking
+ * spaces instead of regular ones — regular spaces collapse to a single
+ * visible space under HTML's default whitespace rules, both live in the
+ * editor and later in the saved read-only view, which would make a
+ * two-space indent look like it did nothing.
+ */
+const TabIndent = Extension.create({
+  name: "tabIndent",
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => this.editor.commands.insertContent(INDENT),
+      "Shift-Tab": () => {
+        const { from } = this.editor.state.selection;
+        const doc = this.editor.state.doc;
+        if (doc.textBetween(Math.max(0, from - INDENT.length), from) === INDENT) {
+          return this.editor.chain().deleteRange({ from: from - INDENT.length, to: from }).run();
+        }
+        if (doc.textBetween(Math.max(0, from - 1), from) === " ") {
+          return this.editor.chain().deleteRange({ from: from - 1, to: from }).run();
+        }
+        return false;
+      },
+    };
+  },
+});
 
 /**
  * AnswerEditor — WYSIWYG editor for a question's answer, backed by Tiptap.
@@ -23,6 +57,12 @@ export default function AnswerEditor({
 }) {
   const editor = useEditor({
     extensions: [
+      // Tiptap builds each extension's keymap plugin in *reverse* list order,
+      // so an extension listed earlier here is tried later at runtime. Listing
+      // TabIndent first means StarterKit's list-sink and TableKit's cell-nav
+      // Tab bindings get first refusal, and TabIndent only fires as the
+      // fallback when neither of those applies.
+      TabIndent,
       StarterKit.configure({ heading: false, codeBlock: false }),
       Link.configure({ openOnClick: false }),
       TableKit,
