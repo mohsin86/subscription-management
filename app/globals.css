@@ -221,15 +221,27 @@
   background: var(--muted);
   font-weight: 600;
 }
-.answer-editor-content {
+.answer-editor-shell {
   border: 1px solid var(--border);
-  padding: 0.75rem;
   border-radius: var(--radius-md);
-  min-height: 8rem;
+  max-height: 24rem;
+  overflow-y: auto;
 }
-.answer-editor-content:focus-within {
+.answer-editor-shell:focus-within {
   outline: 2px solid var(--primary);
   outline-offset: -1px;
+}
+.answer-editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+  padding: 0.375rem;
+}
+.answer-editor-content {
+  padding: 0.75rem;
+  min-height: 8rem;
 }
 .interview-question {
   padding: 1rem 0;
