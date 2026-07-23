@@ -126,6 +126,7 @@
   }
   html {
     @apply font-sans;
+    overflow-x: hidden;
   }
 }
 
@@ -195,6 +196,15 @@
   border-radius: var(--radius-md);
   overflow-x: auto;
   margin: 1rem 0;
+  /* overflow-x:auto alone isn't enough on its own: with width:auto, a pre
+     containing an unbroken long line sizes itself (and drags every block
+     ancestor up to the page container) to fit that line instead of the
+     viewport. width:0 + min-width:100% forces a definite, container-relative
+     size instead, so the overflow stays contained and scrollable inside the
+     pre itself rather than blowing out the whole page on mobile. */
+  width: 0;
+  min-width: 100%;
+  box-sizing: border-box;
 }
 .interview-content pre code {
   background: none;
