@@ -17,7 +17,7 @@ export type InterviewQuestionEditData = z.infer<typeof InterviewQuestionEditSche
  * Args: n/a (Zod schema). Returns: n/a — used via .safeParse() and z.infer.
  */
 export const InterviewQuestionCreateSchema = InterviewQuestionEditSchema.extend({
-  category: z.string().min(1, "Category is required"),
+  topicId: z.string().min(1, "Topic is required"),
 });
 
 export type InterviewQuestionCreateData = z.infer<typeof InterviewQuestionCreateSchema>;

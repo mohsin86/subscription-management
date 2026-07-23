@@ -3,7 +3,7 @@ import { createInterviewQuestion, type InterviewQuestionCreateData } from "../in
 
 /**
  * useCreateInterviewQuestion — adds a new question and refreshes the list for
- * whichever category it was created under (read from the response, not a
+ * whichever topic it was created under (read from the response, not a
  * closed-over argument, since the form lets you pick any topic).
  * Returns: TanStack mutation; call with InterviewQuestionCreateData.
  */
@@ -13,7 +13,7 @@ export function useCreateInterviewQuestion() {
   return useMutation({
     mutationFn: (data: InterviewQuestionCreateData) => createInterviewQuestion(data),
     onSuccess: (created) => {
-      queryClient.invalidateQueries({ queryKey: ["interview-questions", created.category] });
+      queryClient.invalidateQueries({ queryKey: ["interview-questions", created.topicId] });
     },
   });
 }

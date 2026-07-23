@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@/auth";
-import { INTERVIEW_PRACTICE_EMAIL, INTERVIEW_PRACTICE_TOPICS } from "@/lib/interview-practice";
-import AddQuestionForm from "./AddQuestionForm";
+import { prisma } from "@/lib/prisma";
+import { INTERVIEW_PRACTICE_EMAIL } from "@/lib/interview-practice";
 
 export const metadata: Metadata = {
   title: "Interview Practice",
@@ -11,12 +11,14 @@ export const metadata: Metadata = {
 
 /**
  * PracticePage — public menu listing all interview practice topics.
- * Args: none. Returns: list of links to /practice/[slug]; shows AddQuestionForm
- * only when signed in as INTERVIEW_PRACTICE_EMAIL.
+ * Args: none. Returns: list of links to /practice/[slug]; owner-only links to
+ * /practice/add-question and /practice/topics.
  */
 export default async function PracticePage() {
   const session = await auth();
   const isOwner = session?.user?.email === INTERVIEW_PRACTICE_EMAIL;
+
+  const topics = await prisma.topic.findMany({ orderBy: { order: "asc" } });
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-16">
@@ -24,8 +26,8 @@ export default async function PracticePage() {
       <p className="mt-1 text-gray-500 text-sm">Pick a topic to review.</p>
 
       <ul className="mt-6 flex flex-wrap gap-2">
-        {INTERVIEW_PRACTICE_TOPICS.map((topic) => (
-          <li key={topic.slug}>
+        {topics.map((topic) => (
+          <li key={topic.id}>
             <Link
               href={`/practice/${topic.slug}`}
               className="block border px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -36,7 +38,16 @@ export default async function PracticePage() {
         ))}
       </ul>
 
-      {isOwner && <AddQuestionForm />}
+      {isOwner && (
+        <div className="mt-6 flex flex-wrap gap-4 text-sm">
+          <Link href="/practice/add-question" className="underline text-gray-500">
+            + Add question
+          </Link>
+          <Link href="/practice/topics" className="underline text-gray-500">
+            Manage topics
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
