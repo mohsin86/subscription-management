@@ -1,6 +1,17 @@
+model Topic {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  questions InterviewQuestion[]
+}
+
 model InterviewQuestion {
   id          String   @id @default(cuid())
-  category    String
+  topicId     String
+  topic       Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
   section     String?
   question    String   @db.Text
   answer      String   @db.Text
@@ -8,5 +19,5 @@ model InterviewQuestion {
   order       Int      @default(0)
   createdAt   DateTime @default(now())
 
-  @@index([category])
+  @@index([topicId])
 }

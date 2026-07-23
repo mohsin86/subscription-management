@@ -11,23 +11,26 @@ import { handleTabIndent } from "../handleTabIndent";
 import type { InterviewQuestion } from "../interviewQuestions.client";
 
 /**
- * InterviewQuestionsList — fetches and renders a category's questions, grouped
+ * InterviewQuestionsList — fetches and renders a topic's questions, grouped
  * by section, each numbered by its position in the overall list. Editing
  * (raw markdown) and deleting are only available when isOwner is true.
- * Args: categoryTitle (string) — the category to fetch/display.
+ * Args: topicId (string) — the topic to fetch/mutate questions for.
+ * Args: title (string) — the topic's display title, shown as the heading.
  * Args: isOwner (boolean) — whether to show Edit/Delete controls.
  * Returns: grouped, numbered question list JSX.
  */
 export default function InterviewQuestionsList({
-  categoryTitle,
+  topicId,
+  title,
   isOwner,
 }: {
-  categoryTitle: string;
+  topicId: string;
+  title: string;
   isOwner: boolean;
 }) {
-  const { data: questions, isPending, isError, error } = useInterviewQuestions(categoryTitle);
-  const { mutate: updateQuestion, isPending: isSaving } = useUpdateInterviewQuestion(categoryTitle);
-  const { mutate: deleteQuestion, isPending: isDeleting } = useDeleteInterviewQuestion(categoryTitle);
+  const { data: questions, isPending, isError, error } = useInterviewQuestions(topicId);
+  const { mutate: updateQuestion, isPending: isSaving } = useUpdateInterviewQuestion(topicId);
+  const { mutate: deleteQuestion, isPending: isDeleting } = useDeleteInterviewQuestion(topicId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -66,7 +69,7 @@ export default function InterviewQuestionsList({
 
   return (
     <div className="interview-content mt-4">
-      <h1>{categoryTitle}</h1>
+      <h1>{title}</h1>
 
       {sections.map((section, sectionIndex) => (
         <div key={sectionIndex}>

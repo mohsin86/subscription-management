@@ -1,6 +1,6 @@
 export type InterviewQuestion = {
   id: string;
-  category: string;
+  topicId: string;
   section: string | null;
   question: string;
   answer: string;
@@ -15,7 +15,7 @@ export type InterviewQuestionEditData = {
 };
 
 export type InterviewQuestionCreateData = InterviewQuestionEditData & {
-  category: string;
+  topicId: string;
 };
 
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -27,16 +27,16 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 /**
- * fetchInterviewQuestions — gets all questions for a category.
- * Args: category (string). Returns: Promise<InterviewQuestion[]>
+ * fetchInterviewQuestions — gets all questions for a topic.
+ * Args: topicId (string). Returns: Promise<InterviewQuestion[]>
  */
-export async function fetchInterviewQuestions(category: string) {
-  const res = await fetch(`/api/interview-questions?category=${encodeURIComponent(category)}`);
+export async function fetchInterviewQuestions(topicId: string) {
+  const res = await fetch(`/api/interview-questions?topicId=${encodeURIComponent(topicId)}`);
   return handleResponse<InterviewQuestion[]>(res);
 }
 
 /**
- * createInterviewQuestion — adds a new question to a category.
+ * createInterviewQuestion — adds a new question to a topic.
  * Args: data (InterviewQuestionCreateData). Returns: Promise<InterviewQuestion>
  */
 export async function createInterviewQuestion(data: InterviewQuestionCreateData) {
