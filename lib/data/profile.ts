@@ -88,7 +88,7 @@ export const experience: {
       "Coordinate a team of 8 developers day to day — task assignment, sprint planning, and delivery tracking across up to 5 concurrent projects",
       "Design system architecture and database schemas for 4 eCommerce/business platforms — including fullycharged.com, forestgallery.com, chartwellspeakers.com, and snehomart.com — serving roughly 2,000–3,000 daily users",
       "Work directly with clients across the US, Australia, and other regions to gather requirements and manage delivery expectations",
-      "Manage vendor communication for third-party integrations — a payment gateway and an SMS gateway (OTP-based login authentication)",
+      "Manage vendor communication for third-party integrations — payment gateway and SMS gateway (OTP-based login authentication) providers",
       "Run code reviews across the team, identifying bottlenecks — improved page load performance by roughly 25–30% on a legacy project",
     ],
   },
