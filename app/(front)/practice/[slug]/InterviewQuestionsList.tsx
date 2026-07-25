@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { marked } from "marked";
-import { ChevronDown, ChevronRight, Copy, Check } from "lucide-react";
+import { ChevronDown, ChevronRight, Copy, Check, Star } from "lucide-react";
 import { useInterviewQuestions } from "../hooks/useInterviewQuestions";
 import { useUpdateInterviewQuestion } from "../hooks/useUpdateInterviewQuestion";
 import { useDeleteInterviewQuestion } from "../hooks/useDeleteInterviewQuestion";
+import { useToggleImportant } from "../hooks/useToggleImportant";
 import AnswerEditor from "../AnswerEditor";
 import { handleTabIndent } from "../handleTabIndent";
 import type { InterviewQuestion } from "../interviewQuestions.client";
@@ -13,10 +14,11 @@ import type { InterviewQuestion } from "../interviewQuestions.client";
 /**
  * InterviewQuestionsList — fetches and renders a topic's questions, grouped
  * by section, each numbered by its position in the overall list. Editing
- * (raw markdown) and deleting are only available when isOwner is true.
+ * (raw markdown), deleting, and marking important are only available when
+ * isOwner is true; the "Important only" filter is available to everyone.
  * Args: topicId (string) — the topic to fetch/mutate questions for.
  * Args: title (string) — the topic's display title, shown as the heading.
- * Args: isOwner (boolean) — whether to show Edit/Delete controls.
+ * Args: isOwner (boolean) — whether to show Edit/Delete/Star controls.
  * Returns: grouped, numbered question list JSX.
  */
 export default function InterviewQuestionsList({
@@ -31,8 +33,10 @@ export default function InterviewQuestionsList({
   const { data: questions, isPending, isError, error } = useInterviewQuestions(topicId);
   const { mutate: updateQuestion, isPending: isSaving } = useUpdateInterviewQuestion(topicId);
   const { mutate: deleteQuestion, isPending: isDeleting } = useDeleteInterviewQuestion(topicId);
+  const { mutate: toggleImportant, isPending: isTogglingImportant } = useToggleImportant(topicId);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [showImportantOnly, setShowImportantOnly] = useState(false);
 
   function toggleExpanded(id: string) {
     setExpandedIds((prev) => {
@@ -49,8 +53,10 @@ export default function InterviewQuestionsList({
   if (isPending) return <p className="text-gray-500 mt-4">Loading...</p>;
   if (isError) return <p className="text-red-500 mt-4">{(error as Error).message}</p>;
 
+  const visibleQuestions = showImportantOnly ? questions.filter((q) => q.isImportant) : questions;
+
   const sections: { name: string | null; entries: InterviewQuestion[] }[] = [];
-  for (const q of questions) {
+  for (const q of visibleQuestions) {
     const last = sections[sections.length - 1];
     if (last && last.name === q.section) {
       last.entries.push(q);
@@ -71,6 +77,24 @@ export default function InterviewQuestionsList({
     <div className="interview-content mt-4">
       <h1>{title}</h1>
 
+      <button
+        type="button"
+        onClick={() => setShowImportantOnly((value) => !value)}
+        aria-pressed={showImportantOnly}
+        className={`flex items-center gap-1.5 border px-3 py-1 text-sm ${
+          showImportantOnly
+            ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+            : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        }`}
+      >
+        <Star className={`h-4 w-4 ${showImportantOnly ? "fill-current" : ""}`} />
+        {showImportantOnly ? "Showing important only" : "Important only"}
+      </button>
+
+      {showImportantOnly && sections.length === 0 && (
+        <p className="text-gray-500 mt-4">No questions marked important yet.</p>
+      )}
+
       {sections.map((section, sectionIndex) => (
         <div key={sectionIndex}>
           {section.name && <h2>{section.name}</h2>}
@@ -86,6 +110,7 @@ export default function InterviewQuestionsList({
                 isEditing={editingId === q.id}
                 isSaving={isSaving}
                 isDeleting={isDeleting}
+                isTogglingImportant={isTogglingImportant}
                 isExpanded={expandedIds.has(q.id)}
                 onToggleExpand={() => toggleExpanded(q.id)}
                 onEdit={() => setEditingId(q.id)}
@@ -94,6 +119,9 @@ export default function InterviewQuestionsList({
                   updateQuestion({ id: q.id, data }, { onSuccess: () => setEditingId(null) })
                 }
                 onDelete={() => handleDelete(q.id)}
+                onToggleImportant={() =>
+                  toggleImportant({ id: q.id, isImportant: !q.isImportant })
+                }
               />
             );
           })}
@@ -105,8 +133,9 @@ export default function InterviewQuestionsList({
 
 /**
  * QuestionCard — one question, either rendered as HTML or as an edit form.
- * Args: number (running index), question, isOwner (shows Edit/Delete when true),
- * isEditing/isSaving/isDeleting flags, and edit/save/cancel/delete callbacks.
+ * Args: number (running index), question, isOwner (shows Edit/Delete/Star when true),
+ * isEditing/isSaving/isDeleting/isTogglingImportant flags, and edit/save/cancel/delete/
+ * toggle-important callbacks.
  * Returns: card JSX.
  */
 function QuestionCard({
@@ -116,12 +145,14 @@ function QuestionCard({
   isEditing,
   isSaving,
   isDeleting,
+  isTogglingImportant,
   isExpanded,
   onToggleExpand,
   onEdit,
   onCancel,
   onSave,
   onDelete,
+  onToggleImportant,
 }: {
   number: number;
   question: InterviewQuestion;
@@ -129,12 +160,14 @@ function QuestionCard({
   isEditing: boolean;
   isSaving: boolean;
   isDeleting: boolean;
+  isTogglingImportant: boolean;
   isExpanded: boolean;
   onToggleExpand: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onSave: (data: { question: string; answer: string; codeSnippet?: string }) => void;
   onDelete: () => void;
+  onToggleImportant: () => void;
 }) {
   const [questionText, setQuestionText] = useState(question.question);
   const [answerText, setAnswerText] = useState(question.answer);
@@ -219,7 +252,13 @@ function QuestionCard({
           </button>
         </h3>
 
-        <div className="flex flex-wrap gap-2 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {!isOwner && question.isImportant && (
+            <Star
+              className="h-4 w-4 fill-yellow-400 text-yellow-400"
+              aria-label="Marked important"
+            />
+          )}
           <button
             type="button"
             onClick={handleCopy}
@@ -231,6 +270,18 @@ function QuestionCard({
           </button>
           {isOwner && (
             <>
+              <button
+                type="button"
+                disabled={isTogglingImportant}
+                onClick={onToggleImportant}
+                aria-label={question.isImportant ? "Unmark as important" : "Mark as important"}
+                title={question.isImportant ? "Unmark as important" : "Mark as important"}
+                className="border px-2 py-1 text-sm disabled:opacity-40"
+              >
+                <Star
+                  className={`h-4 w-4 ${question.isImportant ? "fill-yellow-400 text-yellow-400" : ""}`}
+                />
+              </button>
               <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
                 Edit
               </button>

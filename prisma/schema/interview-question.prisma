@@ -16,6 +16,7 @@ model InterviewQuestion {
   question    String   @db.Text
   answer      String   @db.Text
   codeSnippet String?  @db.Text
+  isImportant Boolean  @default(false)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
 

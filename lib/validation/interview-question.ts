@@ -21,3 +21,15 @@ export const InterviewQuestionCreateSchema = InterviewQuestionEditSchema.extend(
 });
 
 export type InterviewQuestionCreateData = z.infer<typeof InterviewQuestionCreateSchema>;
+
+/**
+ * InterviewQuestionImportantSchema — validates toggling a question's
+ * isImportant flag. Kept separate from InterviewQuestionEditSchema since
+ * it's a single-field, high-frequency toggle, not a full content edit.
+ * Args: n/a (Zod schema). Returns: n/a — used via .safeParse() and z.infer.
+ */
+export const InterviewQuestionImportantSchema = z.object({
+  isImportant: z.boolean(),
+});
+
+export type InterviewQuestionImportantData = z.infer<typeof InterviewQuestionImportantSchema>;
