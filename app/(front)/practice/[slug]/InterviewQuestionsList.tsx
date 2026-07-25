@@ -252,10 +252,10 @@ function QuestionCard({
           </button>
         </h3>
 
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
+        <div className="flex w-20 flex-col items-stretch gap-2 shrink-0 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
           {!isOwner && question.isImportant && (
             <Star
-              className="h-4 w-4 fill-yellow-400 text-yellow-400"
+              className="h-4 w-4 self-center fill-yellow-400 text-yellow-400"
               aria-label="Marked important"
             />
           )}
@@ -264,9 +264,9 @@ function QuestionCard({
             onClick={handleCopy}
             aria-label="Copy question text"
             title="Copy question text"
-            className="border px-2 py-1 text-sm"
+            className="w-full border px-2 py-1 text-sm sm:w-auto"
           >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            {copied ? <Check className="h-4 w-4 mx-auto" /> : <Copy className="h-4 w-4 mx-auto" />}
           </button>
           {isOwner && (
             <>
@@ -276,20 +276,24 @@ function QuestionCard({
                 onClick={onToggleImportant}
                 aria-label={question.isImportant ? "Unmark as important" : "Mark as important"}
                 title={question.isImportant ? "Unmark as important" : "Mark as important"}
-                className="border px-2 py-1 text-sm disabled:opacity-40"
+                className="w-full border px-2 py-1 text-sm disabled:opacity-40 sm:w-auto"
               >
                 <Star
-                  className={`h-4 w-4 ${question.isImportant ? "fill-yellow-400 text-yellow-400" : ""}`}
+                  className={`h-4 w-4 mx-auto ${question.isImportant ? "fill-yellow-400 text-yellow-400" : ""}`}
                 />
               </button>
-              <button type="button" onClick={onEdit} className="border px-2 py-1 text-sm">
+              <button
+                type="button"
+                onClick={onEdit}
+                className="w-full border px-2 py-1 text-sm sm:w-auto"
+              >
                 Edit
               </button>
               <button
                 type="button"
                 disabled={isDeleting}
                 onClick={onDelete}
-                className="border px-2 py-1 text-sm disabled:opacity-40"
+                className="w-full border px-2 py-1 text-sm disabled:opacity-40 sm:w-auto"
               >
                 Delete
               </button>
