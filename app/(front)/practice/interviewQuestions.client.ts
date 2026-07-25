@@ -5,6 +5,7 @@ export type InterviewQuestion = {
   question: string;
   answer: string;
   codeSnippet: string | null;
+  isImportant: boolean;
   order: number;
 };
 
@@ -57,6 +58,19 @@ export async function updateInterviewQuestion(id: string, data: InterviewQuestio
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+  });
+  return handleResponse<InterviewQuestion>(res);
+}
+
+/**
+ * toggleQuestionImportant — marks/unmarks a question as important.
+ * Args: id (string), isImportant (boolean). Returns: Promise<InterviewQuestion>
+ */
+export async function toggleQuestionImportant(id: string, isImportant: boolean) {
+  const res = await fetch(`/api/interview-questions/${id}/important`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isImportant }),
   });
   return handleResponse<InterviewQuestion>(res);
 }
