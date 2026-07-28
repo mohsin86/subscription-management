@@ -5,7 +5,7 @@ import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { TableKit } from "@tiptap/extension-table";
-import { Bold, Italic, List, ListOrdered, Code, Link2, Table2, Rows3, Columns3 } from "lucide-react";
+import { Bold, Italic, List, ListOrdered, Code, Code2, Link2, Table2, Rows3, Columns3 } from "lucide-react";
 
 const INDENT = "  ";
 
@@ -63,7 +63,17 @@ export default function AnswerEditor({
       // Tab bindings get first refusal, and TabIndent only fires as the
       // fallback when neither of those applies.
       TabIndent,
-      StarterKit.configure({ heading: false, codeBlock: false }),
+      // codeBlock enabled (unlike a plain paragraph, a real code block is
+      // rendered as <pre> with white-space:pre, so pasted or typed
+      // indentation is preserved instead of collapsing under HTML's default
+      // whitespace rules) with Tab/Shift-Tab indenting by 2 spaces while
+      // inside one — real space characters this time, not the NBSP trick
+      // TabIndent uses for plain paragraphs, since <pre> already preserves
+      // plain spaces natively.
+      StarterKit.configure({
+        heading: false,
+        codeBlock: { enableTabIndentation: true, tabSize: 2 },
+      }),
       Link.configure({ openOnClick: false }),
       TableKit,
     ],
@@ -130,6 +140,13 @@ function Toolbar({ editor }: { editor: Editor }) {
         onClick={() => editor.chain().focus().toggleCode().run()}
       >
         <Code className="h-4 w-4" />
+      </ToolbarButton>
+      <ToolbarButton
+        label="Code block"
+        active={editor.isActive("codeBlock")}
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+      >
+        <Code2 className="h-4 w-4" />
       </ToolbarButton>
       <ToolbarButton
         label="Link"
