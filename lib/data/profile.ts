@@ -137,7 +137,7 @@ export const experience: {
 
 export const education = [
   {
-    degree: "Bachelor of Engineering (BE) — Computer Science",
+    degree: "The Bachelor of Science in Computer Science and Engineering (B.Sc. in CSE)",
     school: "International Islamic University Chittagong",
     period: "Dec 2009 – Dec 2012",
   },
